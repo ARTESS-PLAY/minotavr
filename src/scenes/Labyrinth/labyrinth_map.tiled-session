@@ -1,0 +1,29 @@
+{
+    "activeFile": "labyrinth_map.json",
+    "expandedProjectPaths": [
+        "."
+    ],
+    "fileStates": {
+        "labyrinth_map.json": {
+            "scale": 0.75,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 197.33333333333326,
+                "y": 307.33333333333337
+            }
+        },
+        "labyrinth_map.json#labyrinth_map": {
+            "scaleInDock": 1.5
+        }
+    },
+    "last.imagePath": "D:/coding/vsu teach/сиакод/Minotavr/Minotaur Labyrinth/src/scenes/Labyrinth",
+    "openFiles": [
+        "labyrinth_map.json"
+    ],
+    "project": "labyrinth_map.tiled-project",
+    "recentFiles": [
+        "labyrinth_map.json"
+    ],
+    "tileset.embedInMap": true,
+    "tileset.spacing": 1
+}
