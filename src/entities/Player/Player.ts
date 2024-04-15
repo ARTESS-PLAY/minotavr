@@ -8,15 +8,27 @@ import { Entity } from '../Entity';
 export class Player extends Entity {
     private textureKey: string;
     private isMoving: boolean; // передвигается ли сейчас персонаж
+    private animsFrameRate: number;
+    private speed: number;
+
+    private _FRAMERATE = {
+        SLOW: 16,
+        FAST: 32,
+    };
 
     constructor(scene: Phaser.Scene, x: number, y: number, texture: string) {
         super(scene, x, y, texture, SPRITES.PLAYER);
 
         const anims = this.scene.anims;
-        const animsFrameRate = 16;
+        this.animsFrameRate = this._FRAMERATE.SLOW;
 
         this.textureKey = texture;
         this.isMoving = false;
+        this.speed = 0;
+
+        //уменьшаем размеры блока
+        this.setSize(24, 30);
+        this.setOffset(20, 20);
 
         anims.create({
             key: 'up',
@@ -24,7 +36,7 @@ export class Player extends Entity {
                 start: 0,
                 end: 8,
             }),
-            frameRate: animsFrameRate,
+            frameRate: this.animsFrameRate,
             repeat: -1,
         });
 
@@ -34,7 +46,7 @@ export class Player extends Entity {
                 start: 9,
                 end: 17,
             }),
-            frameRate: animsFrameRate,
+            frameRate: this.animsFrameRate,
             repeat: -1,
         });
 
@@ -44,7 +56,7 @@ export class Player extends Entity {
                 start: 18,
                 end: 26,
             }),
-            frameRate: animsFrameRate,
+            frameRate: this.animsFrameRate,
             repeat: -1,
         });
 
@@ -54,7 +66,7 @@ export class Player extends Entity {
                 start: 27,
                 end: 35,
             }),
-            frameRate: animsFrameRate,
+            frameRate: this.animsFrameRate,
             repeat: -1,
         });
     }
@@ -66,7 +78,15 @@ export class Player extends Entity {
         if (!keys) throw new Error('Keyboard is not definted');
 
         //логика по работе с движением
-        const move = delta * 0.15;
+        this.speed = delta * 10;
+
+        //если нажать шифт
+        if (keys.shift.isDown) {
+            this.speed *= 2;
+            this.animsFrameRate = this._FRAMERATE.FAST;
+        } else {
+            this.animsFrameRate = this._FRAMERATE.SLOW;
+        }
 
         this.isMoving = false;
         //также надо обработать случай движения наискосок
@@ -78,40 +98,49 @@ export class Player extends Entity {
             this.isMoving = true;
 
             if (keys.up.isDown) {
-                this._toTop(move * 0.7);
+                this._toTop(this.speed * 0.7);
             }
             if (keys.down.isDown) {
-                this._toBottom(move * 0.7);
+                this._toBottom(this.speed * 0.7);
             }
             if (keys.left.isDown) {
                 this.play('left', true);
-                this._toLeft(move * 0.75);
+                this._toLeft(this.speed * 0.75);
             }
             if (keys.right.isDown) {
                 this.play('rigth', true);
-                this._toRigth(move * 0.75);
+                this._toRigth(this.speed * 0.75);
             }
         } else {
             if (keys.up.isDown) {
                 this.play('up', true);
-                this._toTop(move);
+                this._toTop(this.speed);
                 this.isMoving = true;
             }
             if (keys.down.isDown) {
                 this.play('down', true);
-                this._toBottom(move);
+                this._toBottom(this.speed);
                 this.isMoving = true;
             }
             if (keys.left.isDown) {
                 this.play('left', true);
-                this._toLeft(move);
+                this._toLeft(this.speed);
                 this.isMoving = true;
             }
             if (keys.right.isDown) {
                 this.play('rigth', true);
-                this._toRigth(move);
+                this._toRigth(this.speed);
                 this.isMoving = true;
             }
+        }
+
+        //работа если не двигается персонаж
+        if (!isHorizontalMove) {
+            this.setVelocityX(0);
+        }
+
+        if (!isVerticallMove) {
+            this.setVelocityY(0);
         }
 
         if (!this.isMoving) {
@@ -120,18 +149,18 @@ export class Player extends Entity {
     }
 
     private _toTop(delta: number) {
-        this.setPosition(this.x, (this.y -= delta));
+        this.setVelocityY(-delta);
     }
 
     private _toBottom(delta: number) {
-        this.setPosition(this.x, (this.y += delta));
+        this.setVelocityY(delta);
     }
 
     private _toLeft(delta: number) {
-        this.setPosition(this.x - delta, this.y);
+        this.setVelocityX(-delta);
     }
 
     private _toRigth(delta: number) {
-        this.setPosition(this.x + delta, this.y);
+        this.setVelocityX(delta);
     }
 }

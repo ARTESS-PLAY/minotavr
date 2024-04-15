@@ -9,6 +9,12 @@ new Phaser.Game({
     url: '',
     disableContextMenu: true,
     scene: SCENES,
+    physics: {
+        default: 'arcade',
+        arcade: {
+            debug: true,
+        },
+    },
     scale: {
         mode: Phaser.Scale.FIT,
         autoCenter: Phaser.Scale.CENTER_BOTH,
