@@ -5,11 +5,11 @@
     ],
     "fileStates": {
         "labyrinth_map.json": {
-            "scale": 0.75,
+            "scale": 0.125,
             "selectedLayer": 0,
             "viewCenter": {
-                "x": 197.33333333333326,
-                "y": 307.33333333333337
+                "x": 1456,
+                "y": 1388
             }
         },
         "labyrinth_map.json#labyrinth_map": {

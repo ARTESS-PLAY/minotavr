@@ -10,6 +10,7 @@ export class Player extends Entity {
     private isMoving: boolean; // передвигается ли сейчас персонаж
     private animsFrameRate: number;
     private speed: number;
+    // private _playerLight: Phaser.GameObjects.Light;
 
     private _FRAMERATE = {
         SLOW: 16,
@@ -25,6 +26,12 @@ export class Player extends Entity {
         this.textureKey = texture;
         this.isMoving = false;
         this.speed = 0;
+
+        //делаем свет
+        // this._playerLight = this.scene.lights.addPointLight(x, y, 0xffffff, 300, 1, 0.03);
+        // this._playerLight.setBlendMode('ADD');
+        // this.setPipeline('Light2D');
+        // this._playerLight = this.scene.lights.addLight(x, y, 300, 0xffffff, 3);
 
         //уменьшаем размеры блока
         this.setSize(24, 30);
@@ -94,7 +101,23 @@ export class Player extends Entity {
         const isVerticallMove = keys.up.isDown || keys.down.isDown;
         const isDiagonallyMove = isHorizontalMove && isVerticallMove;
 
-        if (isDiagonallyMove) {
+        //проверка если пытаемся двигаться одновременно в противоположных направлениях
+        if ((keys.up.isDown && keys.down.isDown) || (keys.left.isDown && keys.right.isDown)) {
+            this.isMoving = false;
+            if (keys.up.isDown && keys.down.isDown) {
+                this.play('down', true);
+                this.setVelocityY(0);
+            }
+            if (keys.left.isDown && keys.right.isDown) {
+                this.play('left', true);
+                this.setVelocityX(0);
+            }
+
+            if (!isVerticallMove) {
+            }
+        }
+        //если диагональное движение
+        else if (isDiagonallyMove) {
             this.isMoving = true;
 
             if (keys.up.isDown) {
@@ -146,6 +169,8 @@ export class Player extends Entity {
         if (!this.isMoving) {
             this.stop();
         }
+
+        // if (this._playerLight) this._playerLight.setPosition(this.x, this.y);
     }
 
     private _toTop(delta: number) {
@@ -155,7 +180,6 @@ export class Player extends Entity {
     private _toBottom(delta: number) {
         this.setVelocityY(delta);
     }
-
     private _toLeft(delta: number) {
         this.setVelocityX(-delta);
     }
@@ -163,4 +187,8 @@ export class Player extends Entity {
     private _toRigth(delta: number) {
         this.setVelocityX(delta);
     }
+
+    // public getLight() {
+    //     return this._playerLight;
+    // }
 }
