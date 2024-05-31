@@ -5,4 +5,4 @@ import { Labyrinth } from './Labyrinth/Labyrinth';
  * Индексный файл в котором хранятся все сцены
  */
 
-export const SCENES = [Labyrinth, Hub];
+export const SCENES = [Hub, Labyrinth];

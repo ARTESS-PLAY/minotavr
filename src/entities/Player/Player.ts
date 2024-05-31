@@ -10,7 +10,7 @@ export class Player extends Entity {
     private isMoving: boolean; // передвигается ли сейчас персонаж
     private animsFrameRate: number;
     private speed: number;
-    // private _playerLight: Phaser.GameObjects.Light;
+    private activeSoundKey?: null | string;
 
     private _FRAMERATE = {
         SLOW: 16,
@@ -26,12 +26,6 @@ export class Player extends Entity {
         this.textureKey = texture;
         this.isMoving = false;
         this.speed = 0;
-
-        //делаем свет
-        // this._playerLight = this.scene.lights.addPointLight(x, y, 0xffffff, 300, 1, 0.03);
-        // this._playerLight.setBlendMode('ADD');
-        // this.setPipeline('Light2D');
-        // this._playerLight = this.scene.lights.addLight(x, y, 300, 0xffffff, 3);
 
         //уменьшаем размеры блока
         this.setSize(24, 30);
@@ -76,6 +70,11 @@ export class Player extends Entity {
             frameRate: this.animsFrameRate,
             repeat: -1,
         });
+
+        let volume = this.scene.sound.add('man-run');
+        volume.setVolume(4);
+        volume = this.scene.sound.add('man-walk');
+        volume.setVolume(2);
     }
 
     update(delta: number): void {
@@ -84,6 +83,8 @@ export class Player extends Entity {
 
         if (!keys) throw new Error('Keyboard is not definted');
 
+        let nextSoundKey = null;
+
         //логика по работе с движением
         this.speed = delta * 10;
 
@@ -91,8 +92,10 @@ export class Player extends Entity {
         if (keys.shift.isDown) {
             this.speed *= 2;
             this.animsFrameRate = this._FRAMERATE.FAST;
+            nextSoundKey = 'man-run';
         } else {
             this.animsFrameRate = this._FRAMERATE.SLOW;
+            nextSoundKey = 'man-walk';
         }
 
         this.isMoving = false;
@@ -166,11 +169,24 @@ export class Player extends Entity {
             this.setVelocityY(0);
         }
 
-        if (!this.isMoving) {
+        if (!this.isMoving || (!isVerticallMove && !isHorizontalMove)) {
             this.stop();
+            nextSoundKey = null;
         }
 
-        // if (this._playerLight) this._playerLight.setPosition(this.x, this.y);
+        if (nextSoundKey != this.activeSoundKey) {
+            if (this.activeSoundKey) {
+                const soundPrev = this.scene.sound.get(this.activeSoundKey);
+
+                soundPrev.stop();
+            }
+            if (nextSoundKey) {
+                const soundPrev = this.scene.sound.get(nextSoundKey);
+
+                soundPrev.play();
+            }
+            this.activeSoundKey = nextSoundKey;
+        }
     }
 
     private _toTop(delta: number) {
