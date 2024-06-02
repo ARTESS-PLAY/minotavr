@@ -124,6 +124,16 @@ export class Labyrinth extends Phaser.Scene {
         soundTheme.loop = true;
         soundTheme.volume = 0.1;
         soundTheme.play();
+
+        this.time.addEvent({
+            delay: 15000,
+            callback: () => {
+                console.log(this);
+
+                this.scene.stop(this);
+                this.scene.start('ScreamerScene');
+            },
+        });
     }
 
     update(_: number, delta: number): void {
