@@ -19,25 +19,6 @@ export class Hub extends Phaser.Scene {
     }
 
     create() {
-        const ws = new WebSocket('wss://95.163.223.110:8080');
-
-        // ws.onopen = () => {
-        //     console.log('Соединение установлено');
-        //     ws.send('Привет сервер!');
-        // };
-
-        // ws.onmessage = (event) => {
-        //     console.log(`Сообщение от сервера: ${event.data}`);
-        // };
-
-        // ws.onclose = () => {
-        //     console.log('Соединение закрыто');
-        // };
-
-        ws.onerror = (err) => {
-            console.log(err);
-        };
-
         const audioBg = this.sound.add('theme');
         audioBg.loop = true;
         audioBg.play();

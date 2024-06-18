@@ -1,12 +1,11 @@
-import { Component } from "./Logic/Component";
+import { Component } from './Logic/Component';
 
 /**
  * Класс нужен для удобной работы с сущностями
  */
 
-
 export class Entity extends Phaser.Physics.Arcade.Sprite {
-    protected components: {[key: string]: Component} = {}
+    protected components: { [key: string]: Component } = {};
 
     constructor(scene: Phaser.Scene, x: number, y: number, texture: string, type?: string) {
         super(scene, x, y, texture);
@@ -16,19 +15,19 @@ export class Entity extends Phaser.Physics.Arcade.Sprite {
         this.scene.physics.add.existing(this);
     }
 
-    protected getComponent(key: string){
+    protected getComponent(key: string) {
         const component = this.components[key];
 
-        if(!component) return false;
+        if (!component) return false;
 
         return component;
     }
 
-    protected addComponent(component: Component){
+    protected addComponent(component: Component) {
         const isExist = this.getComponent(component.getKey());
 
-        if(isExist) return;
+        if (isExist) return;
 
-        this.components
+        this.components[component.getKey()] = component;
     }
 }
