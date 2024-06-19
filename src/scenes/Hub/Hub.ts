@@ -10,9 +10,9 @@ export class Hub extends Phaser.Scene {
     }
 
     preload() {
-        this.load.audio('theme', 'src/assets/scenes/Hub/sounds/main_bg.mp3');
+        this.load.audio('theme', 'public/assets/scenes/Hub/sounds/main_bg.mp3');
         this.load.addFile(new WebFontFile(this.load, ['Roboto']));
-        this.load.spritesheet('background', 'src/assets/scenes/Hub/images/bg.png', {
+        this.load.spritesheet('background', 'public/assets/scenes/Hub/images/bg.png', {
             frameWidth: 580,
             frameHeight: 440,
         });
