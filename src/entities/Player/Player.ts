@@ -3,6 +3,7 @@ import { Entity } from '../Entity';
 import { PlayerManagement } from '../Logic/Management/PlayerManagement';
 import { Move } from '../Logic/Movement/Move';
 import { MoveController } from '../Logic/Movement/MoveController';
+import { SoundWalk } from '../Logic/Sound/SoundWalk';
 
 /**
  * Класс отвечает за логику работы игрока
@@ -33,6 +34,9 @@ export class Player extends Entity {
 
         // Передвижение игрока
         this.addComponent(new MoveController(this));
+
+        // Звуки при ходьбе
+        this.addComponent(new SoundWalk(this, 'man-walk', 'man-run'));
 
         const anims = this.scene.anims;
         this.animsFrameRate = this._FRAMERATE.SLOW;
@@ -93,23 +97,21 @@ export class Player extends Entity {
         const playerManagement = this.getComponent('playerManagement') as PlayerManagement;
         const move = this.getComponent('move') as Move;
         const moveController = this.getComponent('moveController') as MoveController;
+        const soundWalk = this.getComponent('soundWalk') as SoundWalk;
 
-        if (!playerManagement || !moveController || !move) {
+        if (!playerManagement || !moveController || !move || !soundWalk) {
             throw new Error('Не найден нужный компонент');
         }
 
         playerManagement.update();
         moveController.updateMove(delta);
-
-        let nextSoundKey = null;
+        soundWalk.updateSound();
 
         //если нажать шифт
         if (move.isGoRunnig) {
             this.animsFrameRate = this._FRAMERATE.FAST;
-            nextSoundKey = 'man-run';
         } else {
             this.animsFrameRate = this._FRAMERATE.SLOW;
-            nextSoundKey = 'man-walk';
         }
 
         //проверка если пытаемся двигаться одновременно в противоположных направлениях
@@ -147,21 +149,6 @@ export class Player extends Entity {
 
         if (!move.isMoving) {
             this.stop();
-            nextSoundKey = null;
-        }
-
-        if (nextSoundKey != this.activeSoundKey) {
-            if (this.activeSoundKey) {
-                const soundPrev = this.scene.sound.get(this.activeSoundKey);
-
-                soundPrev.stop();
-            }
-            if (nextSoundKey) {
-                const soundPrev = this.scene.sound.get(nextSoundKey);
-
-                soundPrev.play();
-            }
-            this.activeSoundKey = nextSoundKey;
         }
     }
 }
