@@ -4,11 +4,7 @@ import { LAYERS, SIZES, SPRITES, TILES } from '../../utils/constants';
 import labyrinthJsonMap from './assets/labyrinth_map.json';
 import { SimpleLightShader } from '../../systems/lighting/SimpleLightShader';
 import { getCanvasPoint } from '../../utils/camera';
-import {
-    MAP_IMAGE_SERVER_JSON_URL,
-    MAP_SERVER_JSON_URL,
-    getMapTiledImageFromServer,
-} from '../../api/server';
+import { MAP_IMAGE_SERVER_JSON_URL, MAP_SERVER_JSON_URL } from '../../api/server';
 
 const pipelines = [SimpleLightShader];
 

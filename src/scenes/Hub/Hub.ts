@@ -1,5 +1,5 @@
 import { Button } from '../../UI/Button';
-import { getMapFromServer } from '../../api/server';
+// import { getMapFromServer } from '../../api/server';
 import WebFontFile from '../../utils/WebFontFile';
 
 export class Hub extends Phaser.Scene {
@@ -49,7 +49,7 @@ export class Hub extends Phaser.Scene {
         btn.on('pointerdown', async () => {
             btn.setText('Загружаю...');
             //@ts-ignore
-            const res = await getMapFromServer();
+            // const res = await getMapFromServer();
             this.scene.start('SceneLabyrinth');
             audioBg.stop();
         });
