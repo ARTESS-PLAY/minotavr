@@ -25,11 +25,8 @@ export class Labyrinth extends Phaser.Scene {
     }
 
     preload() {
-        this.load.image(TILES.LABYRINTH, 'src/scenes/Labyrinth/assets/labyrinth_tiles.png');
-        this.load.tilemapTiledJSON(
-            'labyrinth_map',
-            'src/scenes/Labyrinth/assets/labyrinth_map.json',
-        );
+        this.load.image(TILES.LABYRINTH, 'http://95.163.223.110:3005/map/durotar.jpg');
+        this.load.tilemapTiledJSON('labyrinth_map', 'http://95.163.223.110:3005/map/map.json');
         this.load.spritesheet(SPRITES.PLAYER, 'src/entities/Player/sprite.png', {
             frameWidth: SIZES.PLAYER.WIDTH,
             frameHeight: SIZES.PLAYER.HEIGTH,
@@ -44,7 +41,7 @@ export class Labyrinth extends Phaser.Scene {
         //создаём карту
         this.map = this.make.tilemap({ key: 'labyrinth_map' });
         const tileset = this.map.addTilesetImage(
-            labyrinthJsonMap.tilesets[0].name,
+            'tiles',
             TILES.LABYRINTH,
             SIZES.TILE.WIDTH,
             SIZES.TILE.HEIGTH,

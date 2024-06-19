@@ -14,7 +14,7 @@ export const SIZES = {
 };
 
 export const LAYERS = {
-    GROUNG: 'background',
+    GROUNG: 'ground',
     WALLS: 'walls',
 };
 

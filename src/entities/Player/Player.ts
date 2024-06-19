@@ -12,7 +12,6 @@ import { SoundWalk } from '../Logic/Sound/SoundWalk';
 export class Player extends Entity {
     private textureKey: string;
     private animsFrameRate: number;
-    private activeSoundKey?: null | string;
 
     private _FRAMERATE = {
         SLOW: 16,

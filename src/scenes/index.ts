@@ -6,4 +6,4 @@ import { Screamer } from './Screamer';
  * Индексный файл в котором хранятся все сцены
  */
 
-export const SCENES = [Labyrinth, Hub, Screamer];
+export const SCENES = [Hub, Labyrinth, Screamer];
