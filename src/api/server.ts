@@ -7,6 +7,8 @@ const SERVERURL = 'https://minotavr-game.ru';
  */
 export const getMapFromServer = async () => {
     const res = await axios.get(`${SERVERURL}/map/map.json`);
+
+    console.log(res);
 };
 
 /**
