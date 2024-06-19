@@ -1,6 +1,8 @@
 import { SPRITES } from '../../utils/constants';
 import { Entity } from '../Entity';
+import { PlayerManagement } from '../Logic/Management/PlayerManagement';
 import { Move } from '../Logic/Movement/Move';
+import { MoveController } from '../Logic/Movement/MoveController';
 
 /**
  * Класс отвечает за логику работы игрока
@@ -19,10 +21,18 @@ export class Player extends Entity {
     constructor(scene: Phaser.Scene, x: number, y: number, texture: string) {
         super(scene, x, y, texture, SPRITES.PLAYER);
 
-        // Добавляем компонены
+        /**
+         * Добавляем компоненты
+         */
 
-        //Передвижение
+        // Управление
+        this.addComponent(new PlayerManagement(this));
+
+        // Передвижение
         this.addComponent(new Move(this));
+
+        // Передвижение игрока
+        this.addComponent(new MoveController(this));
 
         const anims = this.scene.anims;
         this.animsFrameRate = this._FRAMERATE.SLOW;
@@ -80,25 +90,21 @@ export class Player extends Entity {
     }
 
     update(delta: number): void {
+        const playerManagement = this.getComponent('playerManagement') as PlayerManagement;
         const move = this.getComponent('move') as Move;
+        const moveController = this.getComponent('moveController') as MoveController;
 
-        if (!move) {
+        if (!playerManagement || !moveController || !move) {
             throw new Error('Не найден нужный компонент');
         }
 
-        //прослушиватели событий
-        const keys = this.scene.input.keyboard?.createCursorKeys();
-
-        if (!keys) throw new Error('Keyboard is not definted');
+        playerManagement.update();
+        moveController.updateMove(delta);
 
         let nextSoundKey = null;
 
-        //логика по работе с движением
-        move.speed = delta * 10;
-
         //если нажать шифт
-        if (keys.shift.isDown) {
-            move.speed *= 2;
+        if (move.isGoRunnig) {
             this.animsFrameRate = this._FRAMERATE.FAST;
             nextSoundKey = 'man-run';
         } else {
@@ -106,78 +112,40 @@ export class Player extends Entity {
             nextSoundKey = 'man-walk';
         }
 
-        move.isMoving = false;
-        //также надо обработать случай движения наискосок
-        const isHorizontalMove = keys.left.isDown || keys.right.isDown;
-        const isVerticallMove = keys.up.isDown || keys.down.isDown;
-        const isDiagonallyMove = isHorizontalMove && isVerticallMove;
-
         //проверка если пытаемся двигаться одновременно в противоположных направлениях
-        if ((keys.up.isDown && keys.down.isDown) || (keys.left.isDown && keys.right.isDown)) {
-            move.isMoving = false;
-            if (keys.up.isDown && keys.down.isDown) {
+        if (moveController.isOppositeMove) {
+            if (move.isGoUp && move.isGoDown) {
                 this.play('down', true);
-                this.setVelocityY(0);
             }
-            if (keys.left.isDown && keys.right.isDown) {
+            if (move.isGoLeft && move.isGoRight) {
                 this.play('left', true);
-                this.setVelocityX(0);
-            }
-
-            if (!isVerticallMove) {
             }
         }
-        //если диагональное движение
-        else if (isDiagonallyMove) {
-            move.isMoving = true;
 
-            if (keys.up.isDown) {
-                move._toTop(move.speed * 0.7);
-            }
-            if (keys.down.isDown) {
-                move._toBottom(move.speed * 0.7);
-            }
-            if (keys.left.isDown) {
+        //если диагональное движение
+        else if (moveController.isDiagonallyMove) {
+            if (move.isGoLeft) {
                 this.play('left', true);
-                move._toLeft(move.speed * 0.75);
             }
-            if (keys.right.isDown) {
+            if (move.isGoRight) {
                 this.play('rigth', true);
-                move._toRigth(move.speed * 0.75);
             }
         } else {
-            if (keys.up.isDown) {
+            if (move.isGoUp) {
                 this.play('up', true);
-                move._toTop(move.speed);
-                move.isMoving = true;
             }
-            if (keys.down.isDown) {
+            if (move.isGoDown) {
                 this.play('down', true);
-                move._toBottom(move.speed);
-                move.isMoving = true;
             }
-            if (keys.left.isDown) {
+            if (move.isGoLeft) {
                 this.play('left', true);
-                move._toLeft(move.speed);
-                move.isMoving = true;
             }
-            if (keys.right.isDown) {
+            if (move.isGoRight) {
                 this.play('rigth', true);
-                move._toRigth(move.speed);
-                move.isMoving = true;
             }
         }
 
-        //работа если не двигается персонаж
-        if (!isHorizontalMove) {
-            this.setVelocityX(0);
-        }
-
-        if (!isVerticallMove) {
-            this.setVelocityY(0);
-        }
-
-        if (!move.isMoving || (!isVerticallMove && !isHorizontalMove)) {
+        if (!move.isMoving) {
             this.stop();
             nextSoundKey = null;
         }

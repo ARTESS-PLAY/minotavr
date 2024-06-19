@@ -1,15 +1,33 @@
 import { Entity } from '../../Entity';
 import { Component } from '../Component';
 
+/**
+ * Компонент позваляет задать базовое передвижение сущности
+ */
 export class Move extends Component {
-    public isMoving: boolean; // передвигается ли сейчас персонаж
-    public speed: number;
+    // Движение вверх
+    public isGoUp: boolean = false;
+
+    // Движение вниз
+    public isGoDown: boolean = false;
+
+    // Движение влево
+    public isGoLeft: boolean = false;
+
+    // Движение вправо
+    public isGoRight: boolean = false;
+
+    // Бежит ли сейчас
+    public isGoRunnig: boolean = false;
+
+    // Передвигается ли сейчас персонаж
+    public isMoving: boolean = false;
+
+    // Скорость персонажа
+    public speed: number = 0;
 
     constructor(obj: Entity) {
         super('move', obj);
-
-        this.isMoving = false;
-        this.speed = 0;
     }
 
     public _toTop(delta: number) {

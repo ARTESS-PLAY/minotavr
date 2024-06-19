@@ -5,7 +5,7 @@ import { Component } from './Logic/Component';
  */
 
 export class Entity extends Phaser.Physics.Arcade.Sprite {
-    protected components: { [key: string]: Component } = {};
+    private components: { [key: string]: Component } = {};
 
     constructor(scene: Phaser.Scene, x: number, y: number, texture: string, type?: string) {
         super(scene, x, y, texture);
@@ -15,7 +15,7 @@ export class Entity extends Phaser.Physics.Arcade.Sprite {
         this.scene.physics.add.existing(this);
     }
 
-    protected getComponent(key: string) {
+    public getComponent(key: string) {
         const component = this.components[key];
 
         if (!component) return false;
