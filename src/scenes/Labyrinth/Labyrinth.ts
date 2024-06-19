@@ -1,10 +1,8 @@
 import { Player } from './../../entities/Player/Player';
 import { LAYERS, SIZES, SPRITES, TILES } from '../../utils/constants';
-//@ts-ignore
-import labyrinthJsonMap from './assets/labyrinth_map.json';
 import { SimpleLightShader } from '../../systems/lighting/SimpleLightShader';
 import { getCanvasPoint } from '../../utils/camera';
-import { MAP_IMAGE_SERVER_JSON_URL, MAP_SERVER_JSON_URL } from '../../api/server';
+import { MAP_IMAGE_SERVER_JSON_URL, getMapFromServer } from '../../api/server';
 
 const pipelines = [SimpleLightShader];
 
@@ -27,8 +25,13 @@ export class Labyrinth extends Phaser.Scene {
     }
 
     preload() {
+        const loadMap = async () => {
+            const data = await getMapFromServer();
+            this.load.tilemapTiledJSON('labyrinth_map', data.json);
+        };
+
+        loadMap();
         this.load.image(TILES.LABYRINTH, MAP_IMAGE_SERVER_JSON_URL);
-        this.load.tilemapTiledJSON('labyrinth_map', MAP_SERVER_JSON_URL);
         this.load.spritesheet(SPRITES.PLAYER, 'public/assets/entities/Player/sprite.png', {
             frameWidth: SIZES.PLAYER.WIDTH,
             frameHeight: SIZES.PLAYER.HEIGTH,
