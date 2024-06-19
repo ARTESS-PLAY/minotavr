@@ -48,6 +48,7 @@ export class Hub extends Phaser.Scene {
 
         btn.on('pointerdown', async () => {
             btn.setText('Загружаю...');
+            //@ts-ignore
             const res = await getMapFromServer();
             this.scene.start('SceneLabyrinth');
             audioBg.stop();

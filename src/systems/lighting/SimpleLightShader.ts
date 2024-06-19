@@ -1,5 +1,5 @@
 import { CustomPipeline } from '../share/CustomPipeline';
-
+//@ts-ignore
 const frag_old = `
 precision mediump float;
 uniform float     time;
@@ -13,7 +13,7 @@ void main( void ) {
 	vec4 texColor = texture2D(uMainSampler, uv);
 	gl_FragColor = texColor;
 }`;
-
+//@ts-ignore
 const frag2 = `
     precision mediump float;
     uniform sampler2D uMainSampler;

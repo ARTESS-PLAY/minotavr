@@ -7,6 +7,7 @@ import { Component } from './Logic/Component';
 export class Entity extends Phaser.Physics.Arcade.Sprite {
     private components: { [key: string]: Component } = {};
 
+    //@ts-ignore
     constructor(scene: Phaser.Scene, x: number, y: number, texture: string, type?: string) {
         super(scene, x, y, texture);
 

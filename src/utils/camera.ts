@@ -12,6 +12,7 @@ export function getCanvasPoint(
 
     // Convert world position into canvas pixel space
     var cam = scene.cameras.main;
+    //@ts-ignore
     var displayScale = cam.scaleManager.displayScale;
 
     //@ts-ignore

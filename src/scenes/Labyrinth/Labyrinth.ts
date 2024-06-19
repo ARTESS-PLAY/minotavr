@@ -1,5 +1,6 @@
 import { Player } from './../../entities/Player/Player';
 import { LAYERS, SIZES, SPRITES, TILES } from '../../utils/constants';
+//@ts-ignore
 import labyrinthJsonMap from './assets/labyrinth_map.json';
 import { SimpleLightShader } from '../../systems/lighting/SimpleLightShader';
 import { getCanvasPoint } from '../../utils/camera';
