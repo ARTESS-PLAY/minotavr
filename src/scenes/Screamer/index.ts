@@ -4,8 +4,8 @@ export class Screamer extends Phaser.Scene {
     }
 
     preload() {
-        this.load.audio('scream', 'src/scenes/Screamer/assets/sounds/screamer.mp3');
-        this.load.image('screamBG', 'src/scenes/Screamer/assets/images/bg.avif');
+        this.load.audio('scream', 'public/assets/scenes/Screamer/sounds/screamer.mp3');
+        this.load.image('screamBG', 'public/assets/scenes/Screamer/images/bg.avif');
     }
 
     create() {

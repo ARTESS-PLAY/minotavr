@@ -28,14 +28,14 @@ export class Labyrinth extends Phaser.Scene {
     preload() {
         this.load.image(TILES.LABYRINTH, 'http://95.163.223.110:3005/map/durotar.jpg');
         this.load.tilemapTiledJSON('labyrinth_map', 'http://95.163.223.110:3005/map/map.json');
-        this.load.spritesheet(SPRITES.PLAYER, 'src/entities/Player/sprite.png', {
+        this.load.spritesheet(SPRITES.PLAYER, 'public/assets/entities/Player/sprite.png', {
             frameWidth: SIZES.PLAYER.WIDTH,
             frameHeight: SIZES.PLAYER.HEIGTH,
         });
 
-        this.load.audio('main-theme', 'src/scenes/Labyrinth/assets/sounds/main-theme.mp3');
-        this.load.audio('man-walk', 'src/entities/Player/assets/sounds/main-walk.mp3');
-        this.load.audio('man-run', 'src/entities/Player/assets/sounds/man-run.mp3');
+        this.load.audio('main-theme', 'public/assets/scenes/Labyrinth/sounds/main-theme.mp3');
+        this.load.audio('man-walk', 'public/assets/entities/Player/sounds/main-walk.mp3');
+        this.load.audio('man-run', 'public/assets/entities/Player/sounds/man-run.mp3');
     }
 
     create() {
