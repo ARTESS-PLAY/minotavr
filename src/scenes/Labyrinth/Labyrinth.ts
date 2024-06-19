@@ -4,6 +4,11 @@ import { LAYERS, SIZES, SPRITES, TILES } from '../../utils/constants';
 import labyrinthJsonMap from './assets/labyrinth_map.json';
 import { SimpleLightShader } from '../../systems/lighting/SimpleLightShader';
 import { getCanvasPoint } from '../../utils/camera';
+import {
+    MAP_IMAGE_SERVER_JSON_URL,
+    MAP_SERVER_JSON_URL,
+    getMapTiledImageFromServer,
+} from '../../api/server';
 
 const pipelines = [SimpleLightShader];
 
@@ -26,8 +31,8 @@ export class Labyrinth extends Phaser.Scene {
     }
 
     preload() {
-        this.load.image(TILES.LABYRINTH, 'http://95.163.223.110:3005/map/durotar.jpg');
-        this.load.tilemapTiledJSON('labyrinth_map', 'http://95.163.223.110:3005/map/map.json');
+        this.load.image(TILES.LABYRINTH, MAP_IMAGE_SERVER_JSON_URL);
+        this.load.tilemapTiledJSON('labyrinth_map', MAP_SERVER_JSON_URL);
         this.load.spritesheet(SPRITES.PLAYER, 'public/assets/entities/Player/sprite.png', {
             frameWidth: SIZES.PLAYER.WIDTH,
             frameHeight: SIZES.PLAYER.HEIGTH,
