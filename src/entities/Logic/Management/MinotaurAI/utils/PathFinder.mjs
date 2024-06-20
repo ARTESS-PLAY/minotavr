@@ -1,9 +1,8 @@
 import { PathNode } from "../objects/PathNode.mjs";
 
 class PathFinder {
-    constructor(width, height, tileValidityArray) {
-        this.width = width;
-        this.height = height;
+    constructor(size, tileValidityArray) {
+        this.size = size;
         this.tileValidityArray = tileValidityArray;
     }
 
@@ -27,7 +26,7 @@ class PathFinder {
     }
 
     tileValid(x, y) {
-        return this.tileValidityArray[x + y * this.width] === 0;
+        return this.tileValidityArray[x + y * this.size] === 0;
     }
 
     addOrUpdatePathNode(list, newPathNode) {
@@ -77,7 +76,7 @@ class PathFinder {
             ];
 
             for (const neighbor of neighbors) {
-                if (neighbor.x < 0 || neighbor.x >= this.width || neighbor.y < 0 || neighbor.y >= this.height) continue;
+                if (neighbor.x < 0 || neighbor.x >= this.size || neighbor.y < 0 || neighbor.y >= this.size) continue;
                 if (this.isInList(closedList, neighbor.x, neighbor.y)) continue;
                 if (!this.tileValid(neighbor.x, neighbor.y)) continue;
 
