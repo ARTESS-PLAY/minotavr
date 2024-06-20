@@ -1,6 +1,7 @@
 import express, { Request, Response } from 'express';
 import cors from 'cors';
 import { config } from './serverConfig';
+import { getLbayrinth } from './controllers/labyrinth';
 
 /* CONFIGURATE APP */
 const app = express();
@@ -16,6 +17,8 @@ app.listen(config.port, () => {
 /* CONFIGURATE APP END*/
 
 app.get('/', textExample);
+
+app.get('/generate_map', getLbayrinth);
 
 function textExample(req: Request, res: Response) {
     res.send('hello!');

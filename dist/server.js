@@ -6,6 +6,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const cors_1 = __importDefault(require("cors"));
 const serverConfig_1 = require("./serverConfig");
+const labyrinth_1 = require("./controllers/labyrinth");
 /* CONFIGURATE APP */
 const app = (0, express_1.default)();
 app.use(express_1.default.json());
@@ -17,6 +18,7 @@ app.listen(serverConfig_1.config.port, () => {
 });
 /* CONFIGURATE APP END*/
 app.get('/', textExample);
+app.get('/generate_map', labyrinth_1.getLbayrinth);
 function textExample(req, res) {
     res.send('hello!');
 }

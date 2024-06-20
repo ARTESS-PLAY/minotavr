@@ -1,7 +1,8 @@
-import { Node } from '../details/Node.mjs';
-import { Edge } from '../details/Edge.mjs';
-import { Kruskal } from './Kruskal.mjs';
-import { Cell } from '../details/Cell.mjs';
+// @ts-nocheck
+import { Node } from '../details/Node.js';
+import { Edge } from '../details/Edge.js';
+import { Kruskal } from './Kruskal.js';
+import { Cell } from '../details/Cell.js';
 import fs from 'fs';
 //стены - 1
 //полости - 3
@@ -104,11 +105,12 @@ export class MazeGenerator {
         }
     }
     generateMap(jsonData) {
+        const json = JSON.parse(JSON.stringify(jsonData));
         const gridSize = this.gridSize;
         const gridScale = gridSize * 4 + 1;
-        const groundLayer = jsonData.layers[0];
-        const wallLayer = jsonData.layers[1];
-        const exitsLayer = jsonData.layers[2];
+        const groundLayer = json.layers[0];
+        const wallLayer = json.layers[1];
+        const exitsLayer = json.layers[2];
         this.generateMaze();
         const wallTileData = new Array((gridSize * 4 + 1) * (gridSize * 4 + 1)).fill(0);
         const exitsTileData = new Array((gridSize * 4 + 1) * (gridSize * 4 + 1)).fill(0);
@@ -207,12 +209,13 @@ export class MazeGenerator {
         groundTileData[startIndex] = 23;
         exitsTileData[finishIndex] = 29;
         //меняет размеры карты будущего json`a
-        jsonData.height = gridScale;
-        jsonData.width = gridScale;
+        json.height = gridScale;
+        json.width = gridScale;
         groundLayer.height = gridScale;
         groundLayer.width = gridScale;
         wallLayer.height = gridScale;
         wallLayer.width = gridScale;
+
         exitsLayer.height = gridScale;
         exitsLayer.width = gridScale;
         //меняет массивы слоёв будущего json`a
@@ -220,7 +223,7 @@ export class MazeGenerator {
         groundLayer.data = groundTileData;
         exitsLayer.data = exitsTileData;
 
-        return { jsonData, startIndex, finishIndex };
+        return { json, startIndex, finishIndex };
     }
 
     //заолпняет горизонтальную стену 3х1 стенами
