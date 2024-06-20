@@ -4,8 +4,11 @@ import { Edge } from '../details/Edge.js';
 import { Kruskal } from './Kruskal.js';
 import { Cell } from '../details/Cell.js';
 import fs from 'fs';
+import { TILES_IDS } from './Constants.js';
 //стены - 1
 //полости - 3
+
+//ground - 355, 356, 357
 
 export class MazeGenerator {
     constructor(gridSize, maxWeight) {
@@ -206,8 +209,8 @@ export class MazeGenerator {
         const finishIndex =
             possibleFinishIndexes[Math.floor(Math.random() * possibleFinishIndexes.length)];
 
-        groundTileData[startIndex] = 23;
-        exitsTileData[finishIndex] = 29;
+        groundTileData[startIndex] = TILES_IDS.START_TILE;
+        exitsTileData[finishIndex] = TILES_IDS.FINISH_TILE;
         //меняет размеры карты будущего json`a
         json.height = gridScale;
         json.width = gridScale;
@@ -228,13 +231,13 @@ export class MazeGenerator {
 
     //заолпняет горизонтальную стену 3х1 стенами
     editHorizontalWall(Array, centerIndex) {
-        Array.fill(28, centerIndex - 1, centerIndex + 2);
+        Array.fill(TILES_IDS.WALL_HORIZONTAL, centerIndex - 1, centerIndex + 2);
     }
     //заполняет вертикальную стену 1х3 стенами
     editVerticalWall(Array, centerIndex) {
-        Array[centerIndex - (this.gridSize * 4 + 1)] = 22;
-        Array[centerIndex] = 22;
-        Array[centerIndex + (this.gridSize * 4 + 1)] = 22;
+        Array[centerIndex - (this.gridSize * 4 + 1)] = TILES_IDS.WALL_VERTICAL;
+        Array[centerIndex] = TILES_IDS.WALL_VERTICAL;
+        Array[centerIndex + (this.gridSize * 4 + 1)] = TILES_IDS.WALL_VERTICAL;
     }
     //заполняет перекрестие в зависимости от случая
     editCrossing(Array, crossIndex, row, col) {
@@ -243,47 +246,47 @@ export class MazeGenerator {
         if (crossIndex < this.gridSize * 4 + 1) {
             //Л-В угол
             if (crossIndex === 0) {
-                Array[crossIndex] = 20;
+                Array[crossIndex] = TILES_IDS.WALL_TWO_CORNER_LEFT_UP;
                 //П-В угол
             } else if (crossIndex === this.gridSize * 4) {
-                Array[crossIndex] = 27;
+                Array[crossIndex] = TILES_IDS.WALL_TWO_CORNER_RIGHT_UP;
                 //верхняя между углами линия
             } else {
                 if (cell.leftWall) {
-                    Array[crossIndex] = 30;
+                    Array[crossIndex] = TILES_IDS.WALL_THREE_DOWN;
                 } else {
-                    Array[crossIndex] = 28;
+                    Array[crossIndex] = TILES_IDS.WALL_HORIZONTAL;
                 }
             }
             //нижняя линия
         } else if (crossIndex >= (this.gridSize * 4 + 1) * this.gridSize * 4) {
             //Л-Н угол
             if (crossIndex === (this.gridSize * 4 + 1) * this.gridSize * 4) {
-                Array[crossIndex] = 24;
+                Array[crossIndex] = TILES_IDS.WALL_TWO_CORNER_LEFT_DOWN;
                 //П-Н угол
             } else if (crossIndex === (this.gridSize * 4 + 1) * (this.gridSize * 4 + 1) - 1) {
-                Array[crossIndex] = 31;
+                Array[crossIndex] = TILES_IDS.WALL_TWO_CORNER_RIGHT_DOWN;
                 //нижняя между углами линия
             } else {
                 if (cell.leftWall) {
-                    Array[crossIndex] = 33;
+                    Array[crossIndex] = TILES_IDS.WALL_THREE_UP;
                 } else {
-                    Array[crossIndex] = 28;
+                    Array[crossIndex] = TILES_IDS.WALL_HORIZONTAL;
                 }
             }
             //левая между углами линия
         } else if (crossIndex % (this.gridSize * 4 + 1) === 0) {
             if (cell.upWall) {
-                Array[crossIndex] = 25;
+                Array[crossIndex] = TILES_IDS.WALL_THREE_RIGHT;
             } else {
-                Array[crossIndex] = 22;
+                Array[crossIndex] = TILES_IDS.WALL_VERTICAL;
             }
             //правая между углами линия
         } else if ((crossIndex + 1) % (this.gridSize * 4 + 1) === 0) {
             if (cell.upWall) {
-                Array[crossIndex] = 32;
+                Array[crossIndex] = TILES_IDS.WALL_THREE_LEFT;
             } else {
-                Array[crossIndex] = 22;
+                Array[crossIndex] = TILES_IDS.WALL_VERTICAL;
             }
             //центр
         } else {
@@ -292,35 +295,35 @@ export class MazeGenerator {
             const leftCrossWall = this.maze[row][col - 1].upWall;
             const rightCrossWall = cell.upWall;
             if (upCrossWall && downCrossWall && leftCrossWall && rightCrossWall) {
-                Array[crossIndex] = 34;
+                Array[crossIndex] = TILES_IDS.WALL_CROSS;
             } else if (!upCrossWall && downCrossWall && leftCrossWall && rightCrossWall) {
-                Array[crossIndex] = 30;
+                Array[crossIndex] = TILES_IDS.WALL_THREE_DOWN;
             } else if (upCrossWall && !downCrossWall && leftCrossWall && rightCrossWall) {
-                Array[crossIndex] = 33;
+                Array[crossIndex] = TILES_IDS.WALL_THREE_UP;
             } else if (upCrossWall && downCrossWall && leftCrossWall && !rightCrossWall) {
-                Array[crossIndex] = 32;
+                Array[crossIndex] = TILES_IDS.WALL_THREE_LEFT;
             } else if (upCrossWall && downCrossWall && !leftCrossWall && rightCrossWall) {
-                Array[crossIndex] = 25;
+                Array[crossIndex] = TILES_IDS.WALL_THREE_RIGHT;
             } else if (!upCrossWall && downCrossWall && leftCrossWall && !rightCrossWall) {
-                Array[crossIndex] = 27;
+                Array[crossIndex] = TILES_IDS.WALL_TWO_CORNER_RIGHT_UP;
             } else if (!upCrossWall && downCrossWall && !leftCrossWall && rightCrossWall) {
-                Array[crossIndex] = 20;
+                Array[crossIndex] = TILES_IDS.WALL_TWO_CORNER_LEFT_UP;
             } else if (upCrossWall && !downCrossWall && leftCrossWall && !rightCrossWall) {
-                Array[crossIndex] = 31;
+                Array[crossIndex] = TILES_IDS.WALL_TWO_CORNER_RIGHT_DOWN;
             } else if (upCrossWall && !downCrossWall && !leftCrossWall && rightCrossWall) {
-                Array[crossIndex] = 24;
+                Array[crossIndex] = TILES_IDS.WALL_TWO_CORNER_LEFT_DOWN;
             } else if (upCrossWall && downCrossWall && !leftCrossWall && !rightCrossWall) {
-                Array[crossIndex] = 22;
+                Array[crossIndex] = TILES_IDS.WALL_VERTICAL;
             } else if (!upCrossWall && !downCrossWall && leftCrossWall && rightCrossWall) {
-                Array[crossIndex] = 28;
+                Array[crossIndex] = TILES_IDS.WALL_HORIZONTAL;
             } else if (upCrossWall && !downCrossWall && !leftCrossWall && !rightCrossWall) {
-                Array[crossIndex] = 21;
+                Array[crossIndex] = TILES_IDS.WALL_ONE_DOWN;
             } else if (!upCrossWall && !downCrossWall && leftCrossWall && !rightCrossWall) {
-                Array[crossIndex] = 26;
+                Array[crossIndex] = TILES_IDS.WALL_ONE_RIGHT;
             } else if (!upCrossWall && !downCrossWall && !leftCrossWall && rightCrossWall) {
-                Array[crossIndex] = 19;
+                Array[crossIndex] = TILES_IDS.WALL_ONE_LEFT;
             } else if (!upCrossWall && downCrossWall && !leftCrossWall && !rightCrossWall) {
-                Array[crossIndex] = 18;
+                Array[crossIndex] = TILES_IDS.WALL_ONE_UP;
             }
         }
     }
