@@ -2,6 +2,7 @@ import { Player } from './../../entities/Player/Player';
 import { LAYERS, SIZES, SPRITES, TILES } from '../../utils/constants';
 import { MAP_IMAGE_SERVER_JSON_URL, getMapFromServer } from '../../api/server';
 import { LabyrinthPipelines } from './LabyrinthPipelines';
+import { LabyrinthUI } from './LabyrinthUI';
 
 export class Labyrinth extends Phaser.Scene {
     public player?: Player;
@@ -106,6 +107,11 @@ export class Labyrinth extends Phaser.Scene {
         soundTheme.loop = true;
         soundTheme.volume = 0.1;
         soundTheme.play();
+
+        this.events.on('shutdown', this.shutdown, this);
+
+        // Запускаем UI
+        this.scene.launch('SceneLabyrinthUI');
     }
 
     update(_: number, delta: number): void {
@@ -118,6 +124,15 @@ export class Labyrinth extends Phaser.Scene {
         if (context.state === 'suspended') {
             context.resume();
         }
+    }
+
+    /**
+     * Срабатывает в момент выключения сцены
+     */
+    shutdown() {
+        // Отключаем пайпланый
+        this.pipelines.shutdownPipelines();
+        this.scene.stop('SceneLabyrinthUI');
     }
 
     // /**
@@ -141,6 +156,11 @@ export class Labyrinth extends Phaser.Scene {
     private exitLabytinth() {
         this.scene.stop();
         this.sound.stopAll();
-        this.scene.start('SceneWin');
+
+        // Получаем за сколько прошли лабиринт
+        const UI = this.scene.get('SceneLabyrinthUI') as LabyrinthUI;
+        const timverValue = UI.getTimerValue();
+
+        this.scene.start('SceneWin', { timverValue });
     }
 }

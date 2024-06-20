@@ -1,3 +1,4 @@
+// import { FogShader } from '../../systems/effects/FogShader';
 import { SimpleLightShader } from '../../systems/lighting/SimpleLightShader';
 import { Labyrinth } from './Labyrinth';
 
@@ -15,6 +16,9 @@ export class LabyrinthPipelines {
         this.pipelines = [];
     }
 
+    /**
+     * Подключает все нужные пайпланый
+     */
     public enablePipilines() {
         //работа с пайплайнами
         pipelines.forEach((pipeline) => {
@@ -31,9 +35,23 @@ export class LabyrinthPipelines {
         });
     }
 
+    /**
+     * Обновляет все нужные пайплайны
+     */
     public updatePipelines() {
         this.pipelines.forEach((pipeline) => {
             pipeline.update();
+        });
+    }
+
+    /**
+     * Удаляет все пайплайны
+     */
+    public shutdownPipelines() {
+        const rerender = this.scene.renderer as Phaser.Renderer.WebGL.WebGLRenderer;
+
+        this.pipelines.forEach((pipeline) => {
+            rerender.pipelines.remove(pipeline.name);
         });
     }
 }

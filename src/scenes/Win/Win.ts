@@ -3,6 +3,7 @@
  */
 
 import WebFontFile from '../../utils/WebFontFile';
+import { getCuteTime } from '../../utils/numbers';
 
 export class Win extends Phaser.Scene {
     constructor() {
@@ -14,7 +15,9 @@ export class Win extends Phaser.Scene {
         this.load.audio('happyWin', 'assets/scenes/Win/sounds/happy.mp3');
     }
 
-    create() {
+    create(data: any) {
+        const timverValue = data.timverValue;
+
         // Звук радости при победе
         const happySound = this.sound.add('happyWin');
         happySound.play();
@@ -22,7 +25,7 @@ export class Win extends Phaser.Scene {
         const textX = Number(this.game.config.width) / 2;
         const textY = Number(this.game.config.height) / 3;
 
-        const text = this.add.text(textX, textY, 'Вы спасись от минотавра!', {
+        const text = this.add.text(textX, textY, 'Вы спаслись от минотавра!', {
             fontFamily: 'Roboto',
             fontSize: 48,
             fontStyle: 'bold',
@@ -31,6 +34,25 @@ export class Win extends Phaser.Scene {
         });
 
         text?.setOrigin(0.5);
+
+        const timerX = Number(this.game.config.width) / 2;
+        const timerY = (Number(this.game.config.height) / 3) * 2;
+
+        const timerText = this.add.text(
+            timerX,
+            timerY,
+            `Вам понадобилось - ${getCuteTime(timverValue)}`,
+            {
+                fontFamily: 'Roboto',
+                fontSize: 36,
+                fontStyle: 'bold',
+                color: '#ffffff',
+                align: 'center',
+            },
+        );
+
+        text?.setOrigin(0.5);
+        timerText?.setOrigin(0.5);
 
         this.time.addEvent({
             delay: 5000,
