@@ -1,51 +1,7 @@
+import { Labyrinth } from '../../scenes/Labyrinth/Labyrinth';
+import { getCanvasPoint } from '../../utils/camera';
 import { CustomPipeline } from '../share/CustomPipeline';
-//@ts-ignore
-const frag_old = `
-precision mediump float;
-uniform float     time;
-uniform vec2      resolution;
-uniform sampler2D uMainSampler;
-varying vec2 outTexCoord;
 
-void main( void ) {
-	vec2 uv = outTexCoord;
-	uv.y += (sin((uv.x + (time * 0.5)) * 10.0) * 0.1) + (sin((uv.x + (time * 0.2)) * 32.0) * 0.01);
-	vec4 texColor = texture2D(uMainSampler, uv);
-	gl_FragColor = texColor;
-}`;
-//@ts-ignore
-const frag2 = `
-    precision mediump float;
-    uniform sampler2D uMainSampler;
-    varying vec2 outTexCoord;
-    void main(void) {
-        vec4 color = texture2D(uMainSampler, outTexCoord);
-        float gray = dot(color.rgb, vec3(0.299, 0.187, 0.114));
-        gl_FragColor = vec4(vec3(gray), 1.0);
-    }`;
-
-// const frag = `
-// precision mediump float;
-
-// uniform vec2 resolution;
-// uniform vec2 center;
-// uniform float radius;
-// uniform float intensity;
-
-// void main() {
-//     vec2 uv = gl_FragCoord.xy / center * resolution.xy;
-//     vec2 diff = uv - center;
-//     float distance = length(diff);
-
-//     if (distance < radius) {
-//         float brightness = 1.0 - distance / radius;
-//         brightness = pow(brightness, intensity);
-//         gl_FragColor = vec4(1.0, 1.0, 1.0, brightness);
-//     } else {
-//         discard;
-//     }
-// }
-// `;
 const frag = `
     precision mediump float;
     uniform vec2  resolution;
@@ -66,7 +22,37 @@ const frag = `
     }`;
 
 export class SimpleLightShader extends CustomPipeline {
+    private worldHeight: string | number;
+
     constructor(game: Phaser.Game) {
         super(game, frag);
+        this.worldHeight = this.game.config.height;
+    }
+
+    // Включение пайплайна
+    public init(scene: Labyrinth) {
+        this.set1f('tx', 0);
+        this.set1f('ty', 0);
+        this.set1f('r', 1);
+        this.set2f('resolution', 1.4, 1.4);
+
+        this.setScene(scene);
+
+        const layers = (this.scene as Labyrinth).layers;
+
+        layers.map((layer) => {
+            if (layer) layer.setPipeline(this);
+        });
+    }
+
+    public update() {
+        const scene = this.scene as Labyrinth;
+        if (!scene?.player) return;
+
+        const playerCurve = scene.player as unknown as Phaser.GameObjects.Curve;
+        const { x, y } = getCanvasPoint(scene, scene.cameras.main, playerCurve);
+
+        this.set1f('tx', x);
+        this.set1f('ty', Number(this.worldHeight) - y);
     }
 }

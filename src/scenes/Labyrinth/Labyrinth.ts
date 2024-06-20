@@ -1,27 +1,24 @@
 import { Player } from './../../entities/Player/Player';
 import { LAYERS, SIZES, SPRITES, TILES } from '../../utils/constants';
-import { SimpleLightShader } from '../../systems/lighting/SimpleLightShader';
-import { getCanvasPoint } from '../../utils/camera';
 import { MAP_IMAGE_SERVER_JSON_URL, getMapFromServer } from '../../api/server';
-
-const pipelines = [SimpleLightShader];
+import { LabyrinthPipelines } from './LabyrinthPipelines';
 
 export class Labyrinth extends Phaser.Scene {
-    private player?: Player;
-    private layers: Array<Phaser.Tilemaps.TilemapLayer | null>;
+    public player?: Player;
+    public layers: Array<Phaser.Tilemaps.TilemapLayer | null>;
     private map?: Phaser.Tilemaps.Tilemap;
     private smallCamera?: Phaser.Cameras.Scene2D.Camera;
     private t: number;
     private tIncrement: number;
 
-    private pipelines: Phaser.Renderer.WebGL.WebGLPipeline[];
+    private pipelines: LabyrinthPipelines;
 
     constructor() {
         super('SceneLabyrinth');
         this.layers = [];
         this.t = 0;
         this.tIncrement = 0.005;
-        this.pipelines = [];
+        this.pipelines = new LabyrinthPipelines(this);
     }
 
     preload() {
@@ -32,14 +29,14 @@ export class Labyrinth extends Phaser.Scene {
 
         loadMap();
         this.load.image(TILES.LABYRINTH, MAP_IMAGE_SERVER_JSON_URL);
-        this.load.spritesheet(SPRITES.PLAYER, 'public/assets/entities/Player/sprite.png', {
+        this.load.spritesheet(SPRITES.PLAYER, 'assets/entities/Player/sprite.png', {
             frameWidth: SIZES.PLAYER.WIDTH,
             frameHeight: SIZES.PLAYER.HEIGTH,
         });
 
-        this.load.audio('main-theme', 'public/assets/scenes/Labyrinth/sounds/main-theme.mp3');
-        this.load.audio('man-walk', 'public/assets/entities/Player/sounds/main-walk.mp3');
-        this.load.audio('man-run', 'public/assets/entities/Player/sounds/man-run.mp3');
+        this.load.audio('main-theme', 'assets/scenes/Labyrinth/sounds/main-theme.mp3');
+        this.load.audio('man-walk', 'assets/entities/Player/sounds/main-walk.mp3');
+        this.load.audio('man-run', 'assets/entities/Player/sounds/man-run.mp3');
     }
 
     create() {
@@ -69,10 +66,9 @@ export class Labyrinth extends Phaser.Scene {
         //работа с камерой
         this.cameras.main.startFollow(this.player);
         this.cameras.main.setBounds(0, 0, this.map.widthInPixels, this.map.heightInPixels);
-        this.cameras.main.ignore([this.physics.world.debugGraphic]);
+        // this.cameras.main.ignore([this.physics.world.debugGraphic]);
 
         //добавляем камеру для эффектов
-
         this.smallCamera = this.cameras.add(
             0,
             0,
@@ -83,37 +79,12 @@ export class Labyrinth extends Phaser.Scene {
         this.smallCamera.setBounds(0, 0, this.map.widthInPixels, this.map.heightInPixels);
         this.smallCamera.ignore([ground, walls, this.player]);
 
-        // const smallCamera = this.cameras.add(0, 0, this.map.widthInPixels, 200);
-        // smallCamera.startFollow(this.player);
-        // smallCamera.setPosition(this.cameras.main.x, this.cameras.main.y);
-        // smallCamera.setScroll(this.cameras.main.scrollX, this.cameras.main.scrollY);
-
-        this.cameras.main.ignore(this.physics.world.debugGraphic);
         this.player.depth = this.player.y + this.player.height / 2;
         walls.depth = walls.y + walls.height / 2;
 
-        //работа со светом
-        // walls.setPipeline('Light2D');
-        // ground.setPipeline('Light2D');
+        this.pipelines.enablePipilines();
 
         this.lights.enable();
-
-        //работа с пайплайнами
-        pipelines.forEach((pipeline) => {
-            const testPiplane = (
-                this.renderer as Phaser.Renderer.WebGL.WebGLRenderer
-            ).pipelines.add(pipeline.name, new pipeline(this.game));
-
-            testPiplane.set1f('tx', 0);
-            testPiplane.set1f('ty', 0);
-            testPiplane.set1f('r', 1);
-            testPiplane.set2f('resolution', 1.4, 1.4);
-
-            walls.setPipeline(testPiplane);
-            ground.setPipeline(testPiplane);
-
-            this.pipelines.push(testPiplane);
-        });
 
         //работа с физикой
         this.physics.world.setBounds(0, 0, this.map.widthInPixels, this.map.heightInPixels);
@@ -142,18 +113,7 @@ export class Labyrinth extends Phaser.Scene {
         if (!this.player) throw new Error('Player is not definded');
         this.t += this.tIncrement;
         this.player.update(delta);
-
-        this.pipelines.forEach((pipeline) => {
-            if (!this.player) return;
-
-            if (pipeline.name == 'SimpleLightShader') {
-                const playerCurve = this.player as unknown as Phaser.GameObjects.Curve;
-                const { x, y } = getCanvasPoint(this, this.cameras.main, playerCurve);
-
-                pipeline.set1f('tx', x);
-                pipeline.set1f('ty', Number(this.game.config.height) - y);
-            }
-        });
+        this.pipelines.updatePipelines();
 
         const { context } = this.game.sound as Phaser.Sound.WebAudioSoundManager;
         if (context.state === 'suspended') {
