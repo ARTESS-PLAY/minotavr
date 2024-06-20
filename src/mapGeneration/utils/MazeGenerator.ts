@@ -34,7 +34,7 @@ export class MazeGenerator {
     generateMaze() {
         const nodes = [];
         const edges = [];
-
+        
         for (let i = 0; i < this.gridSize * this.gridSize; i++) {
             nodes.push(new Node(i));
         }
@@ -119,8 +119,28 @@ export class MazeGenerator {
         const exitsTileData = new Array((gridSize * 4 + 1) * (gridSize * 4 + 1)).fill(0);
         const possibleFinishIndexes = new Array();
         const possibleStartIndexes = new Array();
-        const groundTileData = new Array((gridSize * 4 + 1) * (gridSize * 4 + 1)).fill(361);
-
+        const groundTileIds = [
+            TILES_IDS.GROUND_1, 
+            TILES_IDS.GROUND_2, 
+            TILES_IDS.GROUND_3,
+            TILES_IDS.GROUND_1, 
+            TILES_IDS.GROUND_2, 
+            TILES_IDS.GROUND_3,
+            TILES_IDS.GROUND_1, 
+            TILES_IDS.GROUND_2, 
+            TILES_IDS.GROUND_3,  
+            TILES_IDS.GROUND_BONES_1, 
+            TILES_IDS.GROUND_BONES_2, 
+            TILES_IDS.GROUND_GRASS_1, 
+            TILES_IDS.GROUND_GRASS_2,
+            TILES_IDS.GROUND_ROCK_1,
+            TILES_IDS.GROUND_ROCK_2,
+            TILES_IDS.GROUND_ROCK_3
+        ]
+        const groundTileData = new Array((gridSize * 4 + 1) * (gridSize * 4 + 1)).fill(0).map(() => {
+            return groundTileIds[Math.floor(Math.random() * groundTileIds.length)];
+        });
+        console.log(groundTileData)
         //расстановка на карте стен
         for (let row = 0; row < this.gridSize; row++) {
             for (let col = 0; col < this.gridSize; col++) {

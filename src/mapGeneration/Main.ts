@@ -16,7 +16,7 @@ const mg = new MazeGenerator(GRID_SIZE, MAX_WEIGHT);
 const jsonData = PATH_TO_JSON_MAP;
 const result = mg.generateMap(jsonData);
 //переписывает json файл с новой картой
-fs.writeFileSync('src/mapGeneration/assets/map/test.json', JSON.stringify(result.json, null, 2));
+//fs.writeFileSync('src/mapGeneration/assets/map/test.json', JSON.stringify(result.json, null, 2));
 
 export function generateJsonMap(size: number) {
     const mg = new MazeGenerator(size, MAX_WEIGHT);
