@@ -53,7 +53,6 @@ export class Button extends Phaser.GameObjects.Graphics {
         if (this.text) {
             this.text.destroy();
         }
-        console.log(this.x, this.y);
 
         this.text = this.scene.add.text(this.x, this.y, text, {
             fontFamily: 'Roboto',

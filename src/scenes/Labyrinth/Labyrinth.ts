@@ -7,10 +7,8 @@ export class Labyrinth extends Phaser.Scene {
     public player?: Player;
     public layers: Array<Phaser.Tilemaps.TilemapLayer | null>;
     private map?: Phaser.Tilemaps.Tilemap;
-    private smallCamera?: Phaser.Cameras.Scene2D.Camera;
     private t: number;
     private tIncrement: number;
-    private startIndex: number = 0;
 
     private pipelines: LabyrinthPipelines;
 
@@ -25,7 +23,6 @@ export class Labyrinth extends Phaser.Scene {
     preload() {
         const loadMap = async () => {
             const data = await getMapFromServer();
-            this.startIndex = data.startIndex;
             this.load.tilemapTiledJSON('labyrinth_map', data.json);
         };
 
@@ -74,20 +71,14 @@ export class Labyrinth extends Phaser.Scene {
             SPRITES.PLAYER,
         );
 
+        //Глубина
+        this.player.depth = 1000;
+        walls.depth = 1001;
+        exit.depth = 1;
+
         //работа с камерой
         this.cameras.main.startFollow(this.player);
         this.cameras.main.setBounds(0, 0, this.map.widthInPixels, this.map.heightInPixels);
-
-        //добавляем камеру для эффектов
-        this.smallCamera = this.cameras.add(
-            0,
-            0,
-            this.cameras.main.width,
-            this.cameras.main.height,
-        );
-        this.smallCamera.startFollow(this.player);
-        this.smallCamera.setBounds(0, 0, this.map.widthInPixels, this.map.heightInPixels);
-        this.smallCamera.ignore([ground, walls, this.player]);
 
         this.pipelines.enablePipilines();
 
@@ -98,22 +89,23 @@ export class Labyrinth extends Phaser.Scene {
         this.player.setCollideWorldBounds(true);
 
         this.physics.add.collider(this.player, walls);
+
+        this.physics.add.overlap(
+            this.player,
+            exit,
+            this.exitLabytinth,
+            this.checkIsPlayerOnExit,
+            this,
+        );
+
         walls.setCollisionByExclusion([-1]);
+        // exit.setO
+        // exit.setCollisionByExclusion([-1]);
 
         const soundTheme = this.sound.add('main-theme');
         soundTheme.loop = true;
         soundTheme.volume = 0.1;
         soundTheme.play();
-
-        // this.time.addEvent({
-        //     delay: 15000,
-        //     callback: () => {
-        //         console.log(this);
-
-        //         this.scene.stop(this);
-        //         this.scene.start('ScreamerScene');
-        //     },
-        // });
     }
 
     update(_: number, delta: number): void {
@@ -126,5 +118,29 @@ export class Labyrinth extends Phaser.Scene {
         if (context.state === 'suspended') {
             context.resume();
         }
+    }
+
+    // /**
+    //  * Обработчик собития при наступлении на финиш
+    //  */
+
+    public checkIsPlayerOnExit(
+        _: any,
+        tiled: Phaser.Tilemaps.Tile | Phaser.Types.Physics.Arcade.GameObjectWithBody,
+    ) {
+        const tile = tiled as Phaser.Tilemaps.Tile;
+
+        if (tile.index == 29) {
+            return true;
+        }
+    }
+
+    // /**
+    //  * Позволяет выйти из лабиринта
+    //  */
+    private exitLabytinth() {
+        this.scene.stop();
+        this.sound.stopAll();
+        this.scene.start('SceneWin');
     }
 }
