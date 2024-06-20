@@ -1,3 +1,4 @@
+import { TilesIndexes } from '../../../../../utils/constants.ts';
 import { Directions, MovementData } from '../../../Movement/types.ts';
 import { PathFinder } from './PathFinder.ts';
 const SHIFT_DISTANCE = 4;
@@ -77,20 +78,64 @@ export class MinotaurMovement {
             right: false,
         };
 
+        // Первое движение
+        let firstStep: keyof Directions | '' = '';
+
+        // Второе движение
+        let secondStep: keyof Directions | '' = '';
+
+        // Первое движение
         if (startTile.x !== goalTile.x || startTile.y !== goalTile.y) {
             if (startTile.x > this.path[1].x) {
                 result.left = true;
+                firstStep = 'left';
             } else if (startTile.x < this.path[1].x) {
                 result.right = true;
-            }
-            if (startTile.y > this.path[1].y) {
+                firstStep = 'right';
+            } else if (startTile.y > this.path[1].y) {
                 result.up = true;
+                firstStep = 'up';
             } else if (startTile.y < this.path[1].y) {
                 result.down = true;
+                firstStep = 'down';
+            }
+
+            // Второе движение (вдруг получится идти по диагонали)
+            if (this.path[2] && this.checkIsCanDiagonal(startTile, this.path[2])) {
+                const prevPath = this.path[1];
+                if (prevPath.x !== goalTile.x || prevPath.y !== goalTile.y) {
+                    if (prevPath.x > this.path[2].x) {
+                        result.left = true;
+                    } else if (prevPath.x < this.path[2].x) {
+                        result.right = true;
+                    }
+                    if (prevPath.y > this.path[2].y) {
+                        result.up = true;
+                    } else if (prevPath.y < this.path[2].y) {
+                        result.down = true;
+                    }
+                }
             }
         }
 
         return result;
+    }
+
+    /**
+     * Проверяет пустаяли клетка для второго шага (чтобы не упирался в стенки) или вообще можем идти по диагонали
+     */
+    checkIsCanDiagonal(startTile: Phaser.Tilemaps.Tile, secondStep: { x: number; y: number }) {
+        // Проверяем, идём ли по диагонали, а не прямо
+        if (Math.abs(startTile.x - secondStep.x) > 1 || Math.abs(startTile.y - secondStep.y) > 1) {
+            return false;
+        }
+
+        const tile1 = this.tileArray[startTile.y][secondStep.x];
+        const tile2 = this.tileArray[secondStep.y][startTile.x];
+
+        if (tile1.index == TilesIndexes.EMPTY && tile2.index == TilesIndexes.EMPTY) return true;
+
+        return false;
     }
 
     isRunway(startTile: Phaser.Tilemaps.Tile, goalTile: Phaser.Tilemaps.Tile) {

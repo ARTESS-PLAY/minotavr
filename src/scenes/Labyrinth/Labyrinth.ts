@@ -100,9 +100,13 @@ export class Labyrinth extends Phaser.Scene {
 
         //работа с физикой
         this.physics.world.setBounds(0, 0, this.map.widthInPixels, this.map.heightInPixels);
+
+        // Добавляем столкновения
         this.player.setCollideWorldBounds(true);
+        this.minotavr.setCollideWorldBounds(true);
 
         this.physics.add.collider(this.player, walls);
+        this.physics.add.collider(this.minotavr, walls);
 
         this.physics.add.overlap(
             this.player,

@@ -1,5 +1,5 @@
 import { Labyrinth } from '../../../../scenes/Labyrinth/Labyrinth.js';
-import { LAYERS, MAP_SIZE, TilesIndexes } from '../../../../utils/constants.js';
+import { LAYERS, MAP_SIZE } from '../../../../utils/constants.js';
 import { Entity } from '../../../Entity.js';
 import { Component } from '../../Component.js';
 import { Move } from '../../Movement/Move.js';
