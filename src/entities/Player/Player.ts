@@ -3,6 +3,7 @@ import { Entity } from '../Entity';
 import { PlayerManagement } from '../Logic/Management/PlayerManagement';
 import { Move } from '../Logic/Movement/Move';
 import { MoveController } from '../Logic/Movement/MoveController';
+import { HeartBeat } from '../Logic/Sound/HeartBeat';
 import { SoundWalk } from '../Logic/Sound/SoundWalk';
 
 /**
@@ -36,6 +37,9 @@ export class Player extends Entity {
 
         // Звуки при ходьбе
         this.addComponent(new SoundWalk(this, 'man-walk', 'man-run'));
+
+        // Звук биения сердца
+        this.addComponent(new HeartBeat(this, 'heart'));
 
         const anims = this.scene.anims;
         this.animsFrameRate = this._FRAMERATE.SLOW;
@@ -97,6 +101,7 @@ export class Player extends Entity {
         const move = this.getComponent('move') as Move;
         const moveController = this.getComponent('moveController') as MoveController;
         const soundWalk = this.getComponent('soundWalk') as SoundWalk;
+        const heartBeat = this.getComponent('heartBeat') as HeartBeat;
 
         if (!playerManagement || !moveController || !move || !soundWalk) {
             throw new Error('Не найден нужный компонент');
@@ -105,6 +110,7 @@ export class Player extends Entity {
         playerManagement.update();
         moveController.updateMove(delta);
         soundWalk.updateSound();
+        heartBeat.update();
 
         //если нажать шифт
         if (move.isGoRunnig) {

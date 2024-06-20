@@ -5,6 +5,7 @@ import { LabyrinthPipelines } from './LabyrinthPipelines';
 import { LabyrinthUI } from './LabyrinthUI';
 import { Minotavr } from '../../entities/Minotavr/Minotavr';
 import { CanScream } from '../../entities/Logic/Enemies/CanScream';
+import { HeartBeat } from '../../entities/Logic/Sound/HeartBeat';
 
 export class Labyrinth extends Phaser.Scene {
     public player?: Player;
@@ -13,6 +14,7 @@ export class Labyrinth extends Phaser.Scene {
     public map?: Phaser.Tilemaps.Tilemap;
     private t: number;
     private tIncrement: number;
+    shader: Phaser.GameObjects.Shader | null = null;
 
     private pipelines: LabyrinthPipelines;
 
@@ -44,6 +46,7 @@ export class Labyrinth extends Phaser.Scene {
         this.load.audio('main-theme', 'assets/scenes/Labyrinth/sounds/main-theme.mp3');
         this.load.audio('man-walk', 'assets/entities/Player/sounds/main-walk.mp3');
         this.load.audio('man-run', 'assets/entities/Player/sounds/man-run.mp3');
+        this.load.audio('heart', 'assets/entities/Player/sounds/heart.mp3');
     }
 
     create() {
@@ -88,6 +91,9 @@ export class Labyrinth extends Phaser.Scene {
             exitTiled.pixelY,
             SPRITES.MINOTAVR,
         );
+
+        //Добавляем цель для биения сердца
+        (this.player.getComponent('heartBeat') as HeartBeat).setTarget(this.minotavr);
 
         //Глубина
         this.player.depth = 1000;
@@ -138,7 +144,7 @@ export class Labyrinth extends Phaser.Scene {
         this.scene.launch('SceneLabyrinthUI');
     }
 
-    update(_: number, delta: number): void {
+    update(time: number, delta: number): void {
         if (!this.player) throw new Error('Player is not definded');
         if (!this.minotavr) throw new Error('Minotavr is not definded');
 
@@ -161,6 +167,7 @@ export class Labyrinth extends Phaser.Scene {
         // Отключаем пайпланый
         this.pipelines.shutdownPipelines();
         this.scene.stop('SceneLabyrinthUI');
+        this.sound.stopAll();
     }
 
     // /**

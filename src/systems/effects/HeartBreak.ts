@@ -1,0 +1,25 @@
+/**
+ * Шейдер делает красивые удары сердца как шейдер
+ */
+
+import { CustomPipeline } from '../share/CustomPipeline';
+
+const frag = `
+                precision mediump float;
+                uniform sampler2D uMainSampler;
+                varying vec2 outTexCoord;
+                void main(void) {
+                vec4 color = texture2D(uMainSampler, outTexCoord);
+                float gray = dot(color.rgb, vec3(0.299, 0.587, 0.114));
+                gl_FragColor = vec4(vec3(gray), 1.0);
+                }`;
+
+export class HeartBreakShader extends CustomPipeline {
+    constructor(game: Phaser.Game) {
+        super(game, frag);
+    }
+
+    onPreRender() {
+        this.set1f('time', 0);
+    }
+}

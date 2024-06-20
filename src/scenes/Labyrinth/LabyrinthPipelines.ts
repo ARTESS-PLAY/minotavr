@@ -11,6 +11,7 @@ const pipelines = [SimpleLightShader];
 export class LabyrinthPipelines {
     private scene: Labyrinth;
     private pipelines: InstanceType<(typeof pipelines)[number]>[];
+
     constructor(scene: Labyrinth) {
         this.scene = scene;
         this.pipelines = [];
