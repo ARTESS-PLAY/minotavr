@@ -10,6 +10,7 @@ export class Labyrinth extends Phaser.Scene {
     private smallCamera?: Phaser.Cameras.Scene2D.Camera;
     private t: number;
     private tIncrement: number;
+    private startIndex: number = 0;
 
     private pipelines: LabyrinthPipelines;
 
@@ -24,6 +25,7 @@ export class Labyrinth extends Phaser.Scene {
     preload() {
         const loadMap = async () => {
             const data = await getMapFromServer();
+            this.startIndex = data.startIndex;
             this.load.tilemapTiledJSON('labyrinth_map', data.json);
         };
 
@@ -54,19 +56,27 @@ export class Labyrinth extends Phaser.Scene {
 
         const ground = this.map.createLayer(LAYERS.GROUNG, tileset, 0, 0);
         const walls = this.map.createLayer(LAYERS.WALLS, tileset, 0, 0);
+        const exit = this.map.createLayer(LAYERS.EXIT, tileset, 0, 0);
 
-        if (!walls || !ground) throw new Error('Layers don`t create');
+        if (!walls || !ground || !exit) throw new Error('Layers don`t create');
 
         this.layers.push(ground);
         this.layers.push(walls);
+        this.layers.push(exit);
+
+        const start = ground.findByIndex(23);
 
         //создаём игрока
-        this.player = new Player(this, 600, 300, SPRITES.PLAYER);
+        this.player = new Player(
+            this,
+            start.pixelX + start.width / 2,
+            start.pixelY,
+            SPRITES.PLAYER,
+        );
 
         //работа с камерой
         this.cameras.main.startFollow(this.player);
         this.cameras.main.setBounds(0, 0, this.map.widthInPixels, this.map.heightInPixels);
-        // this.cameras.main.ignore([this.physics.world.debugGraphic]);
 
         //добавляем камеру для эффектов
         this.smallCamera = this.cameras.add(
@@ -78,9 +88,6 @@ export class Labyrinth extends Phaser.Scene {
         this.smallCamera.startFollow(this.player);
         this.smallCamera.setBounds(0, 0, this.map.widthInPixels, this.map.heightInPixels);
         this.smallCamera.ignore([ground, walls, this.player]);
-
-        this.player.depth = this.player.y + this.player.height / 2;
-        walls.depth = walls.y + walls.height / 2;
 
         this.pipelines.enablePipilines();
 

@@ -16,6 +16,7 @@ export const SIZES = {
 export const LAYERS = {
     GROUNG: 'ground',
     WALLS: 'walls',
+    EXIT: 'exits',
 };
 
 export const SPRITES = {
