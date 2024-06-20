@@ -1,5 +1,6 @@
 import { SPRITES } from '../../utils/constants';
 import { Entity } from '../Entity';
+import { CanScream } from '../Logic/Enemies/CanScream';
 import { MinotavrManagement } from '../Logic/Management/MinotaurAI';
 import { Move } from '../Logic/Movement/Move';
 import { MoveController } from '../Logic/Movement/MoveController';
@@ -36,6 +37,9 @@ export class Minotavr extends Entity {
 
         // Звуки при ходьбе
         this.addComponent(new SoundWalk(this, 'man-walk', 'man-run'));
+
+        // Скример
+        this.addComponent(new CanScream(this, 'screamBG', 'scream'));
 
         const anims = this.scene.anims;
         this.animsFrameRate = this._FRAMERATE.SLOW;

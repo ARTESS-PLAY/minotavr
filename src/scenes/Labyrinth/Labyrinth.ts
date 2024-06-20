@@ -4,6 +4,7 @@ import { MAP_IMAGE_SERVER_JSON_URL, getMapFromServer } from '../../api/server';
 import { LabyrinthPipelines } from './LabyrinthPipelines';
 import { LabyrinthUI } from './LabyrinthUI';
 import { Minotavr } from '../../entities/Minotavr/Minotavr';
+import { CanScream } from '../../entities/Logic/Enemies/CanScream';
 
 export class Labyrinth extends Phaser.Scene {
     public player?: Player;
@@ -108,6 +109,7 @@ export class Labyrinth extends Phaser.Scene {
         this.physics.add.collider(this.player, walls);
         this.physics.add.collider(this.minotavr, walls);
 
+        // Выход из лабиринта
         this.physics.add.overlap(
             this.player,
             exit,
@@ -115,6 +117,9 @@ export class Labyrinth extends Phaser.Scene {
             this.checkIsPlayerOnExit,
             this,
         );
+
+        // Поражение
+        this.physics.add.overlap(this.player, this.minotavr, this.minotavrGetPlayer);
 
         walls.setCollisionByExclusion([-1]);
 
@@ -169,9 +174,9 @@ export class Labyrinth extends Phaser.Scene {
         }
     }
 
-    // /**
-    //  * Позволяет выйти из лабиринта
-    //  */
+    /**
+     * Позволяет выйти из лабиринта
+     */
     private exitLabytinth() {
         this.scene.stop();
         this.sound.stopAll();
@@ -181,5 +186,17 @@ export class Labyrinth extends Phaser.Scene {
         const timverValue = UI.getTimerValue();
 
         this.scene.start('SceneWin', { timverValue });
+    }
+
+    /**
+     * Срабатывает когда минотавр догнал игрока
+     */
+    private minotavrGetPlayer(_: unknown, minotavr: unknown) {
+        const sream = (minotavr as Minotavr).getComponent('canScream');
+        if (!sream) throw new Error('У минотавра нет скримера');
+
+        (minotavr as Minotavr).scene.scene.stop();
+        (minotavr as Minotavr).scene.sound.stopAll();
+        (sream as CanScream).sream();
     }
 }
