@@ -38,11 +38,15 @@ export class SimpleLightShader extends CustomPipeline {
 
         this.setScene(scene);
 
+        // Устанавливаем свет на слои
         const layers = (this.scene as Labyrinth).layers;
-
         layers.map((layer) => {
             if (layer) layer.setPipeline(this);
         });
+
+        // Устанавливаем освещение на минотавра
+        // const minotavt = (this.scene as Labyrinth).player;
+        // if (minotavt) minotavt.setPipeline(this);
     }
 
     public update() {

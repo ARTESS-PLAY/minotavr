@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { MAP_SIZE } from '../utils/constants';
 
 const SERVERURL = 'https://minotavr-game.ru';
 // const SERVERURL = 'http://localhost:3005';
@@ -7,7 +8,7 @@ const SERVERURL = 'https://minotavr-game.ru';
  * Получает json карту с сервера
  */
 export const getMapFromServer = async () => {
-    const res = await axios.get(`${SERVERURL}/generate_map?size=3`);
+    const res = await axios.get(`${SERVERURL}/generate_map?size=${MAP_SIZE}`);
 
     return res.data;
 };

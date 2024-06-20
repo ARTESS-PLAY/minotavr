@@ -49,7 +49,7 @@ export class MoveController extends Component {
             return;
         }
 
-        move.speed = delta * 10;
+        move.speed = delta * move.speedKoef;
 
         // Пытаемся понять поведение игрока
         this.isHorizontalMove = move.isGoLeft || move.isGoRight;
@@ -84,7 +84,7 @@ export class MoveController extends Component {
         move.isMoving = true;
 
         if (move.isGoRunnig) {
-            move.speed *= 2;
+            move.speed *= move.speedRunKoef;
         }
 
         // Фича - по горзонтали передвигается быстрее

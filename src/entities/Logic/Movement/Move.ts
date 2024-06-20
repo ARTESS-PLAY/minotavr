@@ -26,6 +26,12 @@ export class Move extends Component {
     // Скорость персонажа
     public speed: number = 0;
 
+    // Коэфициент скорости
+    public speedKoef: number = 10;
+
+    // Коэфициент скорости Бега
+    public speedRunKoef: number = 2;
+
     constructor(obj: Entity) {
         super('move', obj);
     }

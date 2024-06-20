@@ -22,3 +22,11 @@ export const LAYERS = {
 export const SPRITES = {
     PLAYER: 'player',
 };
+
+export const MAP_SIZE = 3;
+
+export const TilesIndexes = {
+    EMPTY: -1,
+    EXIT: 29,
+    START: 23,
+};

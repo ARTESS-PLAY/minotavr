@@ -1,13 +1,15 @@
 import { Player } from './../../entities/Player/Player';
-import { LAYERS, SIZES, SPRITES, TILES } from '../../utils/constants';
+import { LAYERS, SIZES, SPRITES, TILES, TilesIndexes } from '../../utils/constants';
 import { MAP_IMAGE_SERVER_JSON_URL, getMapFromServer } from '../../api/server';
 import { LabyrinthPipelines } from './LabyrinthPipelines';
 import { LabyrinthUI } from './LabyrinthUI';
+import { Minotavr } from '../../entities/Minotavr/Minotavr';
 
 export class Labyrinth extends Phaser.Scene {
     public player?: Player;
+    public minotavr?: Minotavr;
     public layers: Array<Phaser.Tilemaps.TilemapLayer | null>;
-    private map?: Phaser.Tilemaps.Tilemap;
+    public map?: Phaser.Tilemaps.Tilemap;
     private t: number;
     private tIncrement: number;
 
@@ -62,7 +64,7 @@ export class Labyrinth extends Phaser.Scene {
         this.layers.push(walls);
         this.layers.push(exit);
 
-        const start = ground.findByIndex(23);
+        const start = ground.findByIndex(TilesIndexes.START);
 
         //создаём игрока
         this.player = new Player(
@@ -72,8 +74,19 @@ export class Labyrinth extends Phaser.Scene {
             SPRITES.PLAYER,
         );
 
+        const exitTiled = exit.findByIndex(TilesIndexes.EXIT);
+
+        //создаём Минтавра
+        this.minotavr = new Minotavr(
+            this,
+            exitTiled.pixelX + exitTiled.width / 2,
+            exitTiled.pixelY,
+            SPRITES.PLAYER,
+        );
+
         //Глубина
         this.player.depth = 1000;
+        this.minotavr.depth = 1000;
         walls.depth = 1001;
         exit.depth = 1;
 
@@ -100,8 +113,6 @@ export class Labyrinth extends Phaser.Scene {
         );
 
         walls.setCollisionByExclusion([-1]);
-        // exit.setO
-        // exit.setCollisionByExclusion([-1]);
 
         const soundTheme = this.sound.add('main-theme');
         soundTheme.loop = true;
@@ -116,8 +127,12 @@ export class Labyrinth extends Phaser.Scene {
 
     update(_: number, delta: number): void {
         if (!this.player) throw new Error('Player is not definded');
+        if (!this.minotavr) throw new Error('Minotavr is not definded');
+
         this.t += this.tIncrement;
         this.player.update(delta);
+        this.minotavr.update(delta);
+
         this.pipelines.updatePipelines();
 
         const { context } = this.game.sound as Phaser.Sound.WebAudioSoundManager;
