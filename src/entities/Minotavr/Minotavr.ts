@@ -15,12 +15,12 @@ export class Minotavr extends Entity {
     private animsFrameRate: number;
 
     private _FRAMERATE = {
-        SLOW: 16,
-        FAST: 32,
+        SLOW: 8,
+        FAST: 16,
     };
 
     constructor(scene: Phaser.Scene, x: number, y: number, texture: string) {
-        super(scene, x, y, texture, SPRITES.PLAYER);
+        super(scene, x, y, texture, SPRITES.MINOTAVR);
 
         /**
          * Добавляем компоненты
@@ -48,13 +48,13 @@ export class Minotavr extends Entity {
 
         //уменьшаем размеры блока
         this.setSize(24, 30);
-        this.setOffset(20, 20);
+        this.scale = 1.4;
 
         anims.create({
             key: 'minotavrUp',
             frames: anims.generateFrameNumbers(this.textureKey, {
-                start: 0,
-                end: 8,
+                start: 24,
+                end: 27,
             }),
             frameRate: this.animsFrameRate,
             repeat: -1,
@@ -63,8 +63,8 @@ export class Minotavr extends Entity {
         anims.create({
             key: 'minotavrLeft',
             frames: anims.generateFrameNumbers(this.textureKey, {
-                start: 9,
-                end: 17,
+                start: 8,
+                end: 11,
             }),
             frameRate: this.animsFrameRate,
             repeat: -1,
@@ -73,8 +73,8 @@ export class Minotavr extends Entity {
         anims.create({
             key: 'minotavrDown',
             frames: anims.generateFrameNumbers(this.textureKey, {
-                start: 18,
-                end: 26,
+                start: 0,
+                end: 3,
             }),
             frameRate: this.animsFrameRate,
             repeat: -1,
@@ -83,8 +83,8 @@ export class Minotavr extends Entity {
         anims.create({
             key: 'minotavrRight',
             frames: anims.generateFrameNumbers(this.textureKey, {
-                start: 27,
-                end: 35,
+                start: 16,
+                end: 19,
             }),
             frameRate: this.animsFrameRate,
             repeat: -1,

@@ -11,6 +11,10 @@ export const SIZES = {
         WIDTH: 64,
         HEIGTH: 64,
     },
+    MINOTAVR: {
+        WIDTH: 64,
+        HEIGTH: 64,
+    },
 };
 
 export const LAYERS = {
@@ -21,6 +25,7 @@ export const LAYERS = {
 
 export const SPRITES = {
     PLAYER: 'player',
+    MINOTAVR: 'minotavr',
 };
 
 export const MAP_SIZE = 3;

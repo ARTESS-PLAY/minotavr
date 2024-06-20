@@ -36,6 +36,10 @@ export class Labyrinth extends Phaser.Scene {
             frameWidth: SIZES.PLAYER.WIDTH,
             frameHeight: SIZES.PLAYER.HEIGTH,
         });
+        this.load.spritesheet(SPRITES.MINOTAVR, 'assets/entities/Minotavr/sprite.png', {
+            frameWidth: SIZES.MINOTAVR.WIDTH,
+            frameHeight: SIZES.MINOTAVR.HEIGTH,
+        });
 
         this.load.audio('main-theme', 'assets/scenes/Labyrinth/sounds/main-theme.mp3');
         this.load.audio('man-walk', 'assets/entities/Player/sounds/main-walk.mp3');
@@ -82,7 +86,7 @@ export class Labyrinth extends Phaser.Scene {
             this,
             exitTiled.pixelX + exitTiled.width / 2,
             exitTiled.pixelY,
-            SPRITES.PLAYER,
+            SPRITES.MINOTAVR,
         );
 
         //Глубина

@@ -29,8 +29,8 @@ export class MinotavrManagement extends Component {
     enable() {
         // Устанавливаем коэфициенты бега
         const move = this.entity.getComponent('move') as Move;
-        move.speedKoef = 5;
-        move.speedRunKoef = 1.5;
+        move.speedKoef = 4;
+        move.speedRunKoef = 1.2;
     }
 
     update() {
