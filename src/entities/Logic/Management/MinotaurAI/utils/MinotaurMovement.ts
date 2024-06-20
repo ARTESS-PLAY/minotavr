@@ -79,25 +79,15 @@ export class MinotaurMovement {
         };
 
         // Первое движение
-        let firstStep: keyof Directions | '' = '';
-
-        // Второе движение
-        let secondStep: keyof Directions | '' = '';
-
-        // Первое движение
         if (startTile.x !== goalTile.x || startTile.y !== goalTile.y) {
             if (startTile.x > this.path[1].x) {
                 result.left = true;
-                firstStep = 'left';
             } else if (startTile.x < this.path[1].x) {
                 result.right = true;
-                firstStep = 'right';
             } else if (startTile.y > this.path[1].y) {
                 result.up = true;
-                firstStep = 'up';
             } else if (startTile.y < this.path[1].y) {
                 result.down = true;
-                firstStep = 'down';
             }
 
             // Второе движение (вдруг получится идти по диагонали)
@@ -138,16 +128,16 @@ export class MinotaurMovement {
         return false;
     }
 
-    isRunway(startTile: Phaser.Tilemaps.Tile, goalTile: Phaser.Tilemaps.Tile) {
-        let xFlag = true;
-        let yFlag = true;
-        for (let i = 0; i < this.pathLength; i++) {
-            xFlag = xFlag && startTile.x === this.path[i].x;
-            yFlag = yFlag && startTile.y === this.path[i].y;
-            if (!xFlag && !yFlag) {
-                return false;
-            }
-        }
-        return xFlag || yFlag;
-    }
+    // isRunway(startTile: Phaser.Tilemaps.Tile, goalTile: Phaser.Tilemaps.Tile) {
+    //     let xFlag = true;
+    //     let yFlag = true;
+    //     for (let i = 0; i < this.pathLength; i++) {
+    //         xFlag = xFlag && startTile.x === this.path[i].x;
+    //         yFlag = yFlag && startTile.y === this.path[i].y;
+    //         if (!xFlag && !yFlag) {
+    //             return false;
+    //         }
+    //     }
+    //     return xFlag || yFlag;
+    // }
 }

@@ -30,7 +30,7 @@ export class SimpleLightShader extends CustomPipeline {
     }
 
     // Включение пайплайна
-    public init(scene: Labyrinth) {
+    public init(scene: Labyrinth, object: any) {
         this.set1f('tx', 0);
         this.set1f('ty', 0);
         this.set1f('r', 1);
@@ -39,14 +39,13 @@ export class SimpleLightShader extends CustomPipeline {
         this.setScene(scene);
 
         // Устанавливаем свет на слои
-        const layers = (this.scene as Labyrinth).layers;
-        layers.map((layer) => {
-            if (layer) layer.setPipeline(this);
-        });
-
-        // Устанавливаем освещение на минотавра
-        // const minotavt = (this.scene as Labyrinth).player;
-        // if (minotavt) minotavt.setPipeline(this);
+        if (Array.isArray(object)) {
+            object.map((el) => {
+                if (el) el.setPipeline(this);
+            });
+        } else {
+            object.setPipeline(this);
+        }
     }
 
     public update() {
