@@ -10,4 +10,4 @@ import { Win } from './Win/Win';
  * Индексный файл в котором хранятся все сцены
  */
 
-export const SCENES = [Hub, Novella, Labyrinth, Win, Screamer, LabyrinthUI, Defeat];
+export const SCENES = [Labyrinth, Hub, Novella, Win, Screamer, LabyrinthUI, Defeat];

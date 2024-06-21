@@ -10,11 +10,13 @@ export class Screamer extends Phaser.Scene {
 
     create({ sreamImgKey, screamSoundKey }: { sreamImgKey: string; screamSoundKey: string }) {
         const bg = this.add.image(0, 0, sreamImgKey);
+
         let scaleX = this.cameras.main.width / bg.width;
         let scaleY = this.cameras.main.height / bg.height;
-        let scale = Math.max(scaleX, scaleY);
-        bg.setScale(scale).setScrollFactor(0);
-        bg.setOrigin(0, 0);
+        bg.x = this.cameras.main.width / 2;
+        bg.setScale(scaleX, scaleY);
+        bg.setOrigin(0.5, 0);
+        bg.setInteractive();
 
         const audio = this.sound.add(screamSoundKey);
 

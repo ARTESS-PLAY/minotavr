@@ -1,3 +1,4 @@
+import { Labyrinth } from '../../scenes/Labyrinth/Labyrinth';
 import { SPRITES } from '../../utils/constants';
 import { Entity } from '../Entity';
 import { CanScream } from '../Logic/Enemies/CanScream';
@@ -13,6 +14,11 @@ import { SoundWalk } from '../Logic/Sound/SoundWalk';
 export class Minotavr extends Entity {
     private textureKey: string;
     private animsFrameRate: number;
+    public minotavrWalk:
+        | Phaser.Sound.NoAudioSound
+        | Phaser.Sound.HTML5AudioSound
+        | Phaser.Sound.WebAudioSound
+        | null = null;
 
     private _FRAMERATE = {
         SLOW: 8,
@@ -36,7 +42,7 @@ export class Minotavr extends Entity {
         this.addComponent(new MoveController(this));
 
         // Звуки при ходьбе
-        this.addComponent(new SoundWalk(this, 'man-walk', 'man-run'));
+        this.addComponent(new SoundWalk(this, 'minotavr-walk', 'man-run'));
 
         // Скример
         this.addComponent(new CanScream(this, 'screamBG', 'scream'));
@@ -92,8 +98,10 @@ export class Minotavr extends Entity {
 
         let volume = this.scene.sound.add('man-run');
         volume.setVolume(4);
-        volume = this.scene.sound.add('man-walk');
-        volume.setVolume(2);
+        this.minotavrWalk = this.scene.sound.add('minotavr-walk');
+        this.minotavrWalk.setVolume(1);
+        this.minotavrWalk.loop = true;
+        this.minotavrWalk.stop();
 
         // Ставим коэфициенты
         const minotavrManagement = this.getComponent('minotavrManagement') as MinotavrManagement;
@@ -112,7 +120,6 @@ export class Minotavr extends Entity {
 
         minotavrManagement.update();
         moveController.updateMove(delta);
-        soundWalk.updateSound();
 
         //если нажать шифт
         if (move.isGoRunnig) {
@@ -156,6 +163,29 @@ export class Minotavr extends Entity {
 
         if (!move.isMoving) {
             this.stop();
+        } else {
         }
+        this.updateSound();
+    }
+
+    updateSound() {
+        const player = (this.scene as Labyrinth).player;
+
+        if (!player || !this.minotavrWalk) return;
+
+        const dictance = Phaser.Math.Distance.Between(this.x, this.y, player.x, player.y);
+
+        const minDistance = 1000;
+        console.log(this.minotavrWalk.isPlaying);
+
+        if (dictance < minDistance) {
+            if (!this.minotavrWalk.isPlaying) this.minotavrWalk.play();
+
+            this.minotavrWalk.volume = Math.min(1.1, minDistance / dictance / 4);
+        } else {
+            this.minotavrWalk.stop();
+        }
+
+        console.log(this.minotavrWalk.volume);
     }
 }

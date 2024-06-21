@@ -50,14 +50,6 @@ export class Novella extends Phaser.Scene {
             const audioBg = this.sound.get('theme');
             audioBg.stop();
         });
-
-        this.time.addEvent({
-            // delay: 5000,
-            // callback: () => {
-            //     this.scene.stop(this);
-            //     this.scene.start('SceneDefeat');
-            // },
-        });
     }
 
     prepareImage(image: Phaser.GameObjects.Image) {
