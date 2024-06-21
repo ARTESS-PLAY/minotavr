@@ -47,6 +47,14 @@ export class Labyrinth extends Phaser.Scene {
         this.load.audio('minotavr-walk', 'assets/entities/Minotavr/sounds/walk.mp3');
         this.load.audio('man-run', 'assets/entities/Player/sounds/man-run.mp3');
         this.load.audio('heart', 'assets/entities/Player/sounds/heart.mp3');
+
+        // Реплики минотавра
+        this.load.audio('replic1', 'assets/entities/Minotavr/sounds/replics/brawl.mp3');
+        this.load.audio('replic2', 'assets/entities/Minotavr/sounds/replics/dnd.mp3');
+        this.load.audio('replic3', 'assets/entities/Minotavr/sounds/replics/muuuu.mp3');
+        this.load.audio('replic4', 'assets/entities/Minotavr/sounds/replics/nasheeeel.mp3');
+        this.load.audio('replic5', 'assets/entities/Minotavr/sounds/replics/pivo.mp3');
+        this.load.audio('replic6', 'assets/entities/Minotavr/sounds/replics/popalsya.mp3');
     }
 
     create() {

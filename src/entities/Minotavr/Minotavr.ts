@@ -25,6 +25,12 @@ export class Minotavr extends Entity {
         FAST: 16,
     };
 
+    private replicKeys = ['replic1', 'replic2', 'replic3', 'replic4', 'replic5', 'replic6'];
+
+    private replicKeysSayd: Array<string> = [];
+
+    private activeReplic: string | null = null;
+
     constructor(scene: Phaser.Scene, x: number, y: number, texture: string) {
         super(scene, x, y, texture, SPRITES.MINOTAVR);
 
@@ -176,16 +182,60 @@ export class Minotavr extends Entity {
         const dictance = Phaser.Math.Distance.Between(this.x, this.y, player.x, player.y);
 
         const minDistance = 1000;
-        console.log(this.minotavrWalk.isPlaying);
 
         if (dictance < minDistance) {
             if (!this.minotavrWalk.isPlaying) this.minotavrWalk.play();
 
             this.minotavrWalk.volume = Math.min(1.1, minDistance / dictance / 4);
+
+            this.sayRandomReplics();
         } else {
             this.minotavrWalk.stop();
         }
+    }
 
-        console.log(this.minotavrWalk.volume);
+    /**
+     * Говорит случайную реплику
+     */
+    sayRandomReplics() {
+        // Значит уже что-то говорит
+        if (this.activeReplic) return;
+
+        const player = (this.scene as Labyrinth).player;
+
+        if (!player || !this.minotavrWalk) return;
+
+        const dictance = Phaser.Math.Distance.Between(this.x, this.y, player.x, player.y);
+
+        if (dictance < 200) {
+            // Берём случайную реплику
+            const replicKey = this.replicKeys[Math.floor(Math.random() * this.replicKeys.length)];
+
+            // Удаляем её
+            const index = this.replicKeys.indexOf(replicKey);
+            this.replicKeys.splice(index, 1);
+
+            // И несём в массив сказаных реплик
+            this.replicKeysSayd.push(replicKey);
+
+            // Начинаем говорить
+            const replic = this.scene.sound.add(replicKey);
+            replic.volume = 1.5;
+            replic.play();
+            this.activeReplic = replicKey;
+
+            this.scene.time.addEvent({
+                delay: replic.duration * 1000 + 2000,
+                callback: () => {
+                    this.activeReplic = null;
+
+                    // Если реплики закончились - обновляем
+                    if (!this.replicKeys.length) {
+                        this.replicKeys = this.replicKeysSayd;
+                        this.replicKeysSayd = [];
+                    }
+                },
+            });
+        }
     }
 }

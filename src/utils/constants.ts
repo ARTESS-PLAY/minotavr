@@ -28,7 +28,7 @@ export const SPRITES = {
     MINOTAVR: 'minotavr',
 };
 
-export const MAP_SIZE = 15;
+export const MAP_SIZE = 3;
 
 export const TilesIndexes = {
     EMPTY: -1,
