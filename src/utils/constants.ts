@@ -44,6 +44,7 @@ export const GOST_SCREAMERS = {
 };
 
 export const MAP_SIZE = 15;
+export const MAX_GHOST = 7;
 
 export const TilesIndexes = {
     EMPTY: -1,

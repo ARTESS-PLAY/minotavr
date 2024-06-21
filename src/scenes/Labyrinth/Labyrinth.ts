@@ -1,5 +1,13 @@
 import { Player } from './../../entities/Player/Player';
-import { GOST_SCREAMERS, LAYERS, SIZES, SPRITES, TILES, TilesIndexes } from '../../utils/constants';
+import {
+    GOST_SCREAMERS,
+    LAYERS,
+    MAX_GHOST,
+    SIZES,
+    SPRITES,
+    TILES,
+    TilesIndexes,
+} from '../../utils/constants';
 import { MAP_IMAGE_SERVER_JSON_URL, getMapFromServer } from '../../api/server';
 import { LabyrinthPipelines } from './LabyrinthPipelines';
 import { LabyrinthUI } from './LabyrinthUI';
@@ -264,6 +272,8 @@ export class Labyrinth extends Phaser.Scene {
      */
     generateRandomGhost() {
         if (!this.map) return;
+
+        if (this.gosts.length >= MAX_GHOST) return;
 
         const randomX = randomInteger(0, this.map.widthInPixels);
         const randomY = randomInteger(0, this.map.heightInPixels);
