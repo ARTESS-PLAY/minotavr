@@ -48,9 +48,8 @@ export class Hub extends Phaser.Scene {
 
         btn.on('pointerdown', async () => {
             btn.setText('Загружаю...');
-            this.scene.start('SceneLabyrinth');
+            this.scene.start('NovellaScene');
             this.scene.stop();
-            audioBg.stop();
         });
     }
     update() {
