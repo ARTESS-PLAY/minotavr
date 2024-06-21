@@ -94,6 +94,12 @@ export class Player extends Entity {
         volume.setVolume(4);
         volume = this.scene.sound.add('man-walk');
         volume.setVolume(2);
+
+        // Конфигурируем статину
+        const move = this.getComponent('move') as Move;
+
+        move.stamina = 50;
+        move.maxStamina = 100;
     }
 
     update(delta: number): void {

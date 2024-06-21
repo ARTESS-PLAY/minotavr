@@ -5,21 +5,33 @@
 import { CustomPipeline } from '../share/CustomPipeline';
 
 const frag = `
-                precision mediump float;
-                uniform sampler2D uMainSampler;
-                varying vec2 outTexCoord;
-                void main(void) {
-                vec4 color = texture2D(uMainSampler, outTexCoord);
-                float gray = dot(color.rgb, vec3(0.299, 0.587, 0.114));
-                gl_FragColor = vec4(vec3(gray), 1.0);
-                }`;
+                #ifdef GL_ES
+precision mediump float;
+#endif
+
+uniform float time;
+uniform vec2 resolution;
+uniform vec3 pulseColor;
+uniform float pulseSpeed;
+uniform float pulseIntensity;
+
+void main() {
+    vec2 uv = gl_FragCoord.xy / resolution.xy;
+    float distance = length(uv - 0.5) * 2.0;
+    float pulse = sin(distance * 10.0 - time * pulseSpeed) * pulseIntensity;
+    vec3 color = mix(vec3(0.0), pulseColor, pulse);
+    gl_FragColor = vec4(color, 1.0);
+}`;
 
 export class HeartBreakShader extends CustomPipeline {
     constructor(game: Phaser.Game) {
         super(game, frag);
     }
 
-    onPreRender() {
-        this.set1f('time', 0);
+    init() {
+        this.set1f('time', 0.0);
+        this.set1f('pulseSpeed', 5.0);
+        this.set1f('pulseIntensity', 0.5);
+        this.set3fv('pulseColor', [1.0, 0.0, 0.0]);
     }
 }

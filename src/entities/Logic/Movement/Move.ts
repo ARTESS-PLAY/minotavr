@@ -32,6 +32,12 @@ export class Move extends Component {
     // Коэфициент скорости Бега
     public speedRunKoef: number = 2;
 
+    // Макимальная выносливость
+    public maxStamina: number = Infinity;
+
+    // текущая выносливость
+    public stamina: number = Infinity;
+
     constructor(obj: Entity) {
         super('move', obj);
     }

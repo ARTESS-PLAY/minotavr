@@ -14,7 +14,6 @@ export class Labyrinth extends Phaser.Scene {
     public map?: Phaser.Tilemaps.Tilemap;
     private t: number;
     private tIncrement: number;
-    shader: Phaser.GameObjects.Shader | null = null;
 
     private pipelines: LabyrinthPipelines;
 
@@ -104,7 +103,6 @@ export class Labyrinth extends Phaser.Scene {
         //работа с камерой
         this.cameras.main.startFollow(this.player);
         this.cameras.main.setBounds(0, 0, this.map.widthInPixels, this.map.heightInPixels);
-
         this.pipelines.enablePipilines();
 
         this.lights.enable();
@@ -144,7 +142,7 @@ export class Labyrinth extends Phaser.Scene {
         this.scene.launch('SceneLabyrinthUI');
     }
 
-    update(time: number, delta: number): void {
+    update(_: number, delta: number): void {
         if (!this.player) throw new Error('Player is not definded');
         if (!this.minotavr) throw new Error('Minotavr is not definded');
 

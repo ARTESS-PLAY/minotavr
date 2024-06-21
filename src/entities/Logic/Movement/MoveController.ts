@@ -46,6 +46,7 @@ export class MoveController extends Component {
             move.speed = 0;
             entity.setVelocityY(0);
             entity.setVelocityX(0);
+            this.updateStamina(delta);
             return;
         }
 
@@ -83,8 +84,13 @@ export class MoveController extends Component {
         // В остальном случае - идём
         move.isMoving = true;
 
+        this.updateStamina(delta);
+
+        move.isGoRunnig = move.isGoRunnig && this.canRun();
+
         if (move.isGoRunnig) {
             move.speed *= move.speedRunKoef;
+            move.stamina = Math.max(0, move.stamina - delta * 0.1);
         }
 
         // Фича - по горзонтали передвигается быстрее
@@ -99,6 +105,26 @@ export class MoveController extends Component {
         }
         if (move.isGoRight) {
             move._toRigth(move.speed * (this.isDiagonallyMove ? 0.75 : 1));
+        }
+    }
+
+    public canRun() {
+        const move = this.entity.getComponent('move') as Move;
+
+        if (!isFinite(move.maxStamina)) return true;
+
+        if (move.stamina > 1) return true;
+
+        return false;
+    }
+
+    public updateStamina(delta: number) {
+        const move = this.entity.getComponent('move') as Move;
+
+        if (!isFinite(move.maxStamina)) return;
+
+        if (!move.isGoRunnig || !move.isMoving) {
+            move.stamina = Math.min(move.maxStamina, move.stamina + delta * 0.05);
         }
     }
 }
