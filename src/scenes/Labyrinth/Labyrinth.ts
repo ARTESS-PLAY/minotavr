@@ -1,11 +1,14 @@
 import { Player } from './../../entities/Player/Player';
-import { LAYERS, SIZES, SPRITES, TILES, TilesIndexes } from '../../utils/constants';
+import { GOST_SCREAMERS, LAYERS, SIZES, SPRITES, TILES, TilesIndexes } from '../../utils/constants';
 import { MAP_IMAGE_SERVER_JSON_URL, getMapFromServer } from '../../api/server';
 import { LabyrinthPipelines } from './LabyrinthPipelines';
 import { LabyrinthUI } from './LabyrinthUI';
 import { Minotavr } from '../../entities/Minotavr/Minotavr';
 import { CanScream } from '../../entities/Logic/Enemies/CanScream';
 import { HeartBeat } from '../../entities/Logic/Sound/HeartBeat';
+import { Gost } from '../../entities/Gost/Gost';
+import { SimpleLightShader } from '../../systems/lighting/SimpleLightShader';
+import { randomInteger } from '../../utils/numbers';
 
 export class Labyrinth extends Phaser.Scene {
     public player?: Player;
@@ -16,6 +19,9 @@ export class Labyrinth extends Phaser.Scene {
     private tIncrement: number;
 
     private pipelines: LabyrinthPipelines;
+    private triggerTimer: Phaser.Time.TimerEvent | null = null;
+
+    public gosts: Array<Gost> = [];
 
     constructor() {
         super('SceneLabyrinth');
@@ -41,11 +47,16 @@ export class Labyrinth extends Phaser.Scene {
             frameWidth: SIZES.MINOTAVR.WIDTH,
             frameHeight: SIZES.MINOTAVR.HEIGTH,
         });
+        this.load.spritesheet(SPRITES.GOST, 'assets/entities/Gost/sprite.png', {
+            frameWidth: SIZES.GOST.WIDTH,
+            frameHeight: SIZES.GOST.HEIGTH,
+        });
 
         this.load.audio('main-theme', 'assets/scenes/Labyrinth/sounds/main-theme.mp3');
         this.load.audio('man-walk', 'assets/entities/Player/sounds/main-walk.mp3');
         this.load.audio('minotavr-walk', 'assets/entities/Minotavr/sounds/walk.mp3');
         this.load.audio('man-run', 'assets/entities/Player/sounds/man-run.mp3');
+        this.load.audio('gost-walk', 'assets/entities/Gost/sounds/walk.mp3');
         this.load.audio('heart', 'assets/entities/Player/sounds/heart.mp3');
 
         // Реплики минотавра
@@ -149,9 +160,17 @@ export class Labyrinth extends Phaser.Scene {
 
         // Запускаем UI
         this.scene.launch('SceneLabyrinthUI');
+
+        // Запускаем генерацию призраков
+        this.triggerTimer = this.time.addEvent({
+            callback: this.generateRandomGhost,
+            callbackScope: this,
+            delay: GOST_SCREAMERS.TIME_GENERATE,
+            loop: true,
+        });
     }
 
-    update(_: number, delta: number): void {
+    public update(_: number, delta: number): void {
         if (!this.player) throw new Error('Player is not definded');
         if (!this.minotavr) throw new Error('Minotavr is not definded');
 
@@ -160,6 +179,9 @@ export class Labyrinth extends Phaser.Scene {
         this.minotavr.update(delta);
 
         this.pipelines.updatePipelines();
+
+        // Обновляем призраков
+        this.gosts.map((el) => el.update(delta));
 
         const { context } = this.game.sound as Phaser.Sound.WebAudioSoundManager;
         if (context.state === 'suspended') {
@@ -170,16 +192,17 @@ export class Labyrinth extends Phaser.Scene {
     /**
      * Срабатывает в момент выключения сцены
      */
-    shutdown() {
+    public shutdown() {
         // Отключаем пайпланый
         this.pipelines.shutdownPipelines();
         this.scene.stop('SceneLabyrinthUI');
         this.sound.stopAll();
+        this.triggerTimer?.destroy();
     }
 
-    // /**
-    //  * Обработчик собития при наступлении на финиш
-    //  */
+    /**
+     * Обработчик собития при наступлении на финиш
+     */
 
     public checkIsPlayerOnExit(
         _: any,
@@ -216,5 +239,49 @@ export class Labyrinth extends Phaser.Scene {
         (minotavr as Minotavr).scene.scene.stop();
         (minotavr as Minotavr).scene.sound.stopAll();
         (sream as CanScream).sream();
+    }
+
+    /**
+     * Срабатывает когда минотавр догнал игрока
+     */
+    private gostGetPlayer(_: unknown, gost: unknown) {
+        const currentGost = gost as Gost;
+        const sream = currentGost.getComponent('canScream');
+        if (!sream) throw new Error('У призрака нет скримера');
+
+        (sream as CanScream).sreamParalel();
+
+        const scene = currentGost.scene as Labyrinth;
+
+        scene.gosts = scene.gosts.filter((g) => g != currentGost);
+
+        currentGost.delete();
+        currentGost.destroy();
+    }
+
+    /**
+     * Появляет призрака в случайной точке на карте
+     */
+    generateRandomGhost() {
+        if (!this.map) return;
+
+        const randomX = randomInteger(0, this.map.widthInPixels);
+        const randomY = randomInteger(0, this.map.heightInPixels);
+
+        const gost = new Gost(this, randomX, randomY, SPRITES.GOST);
+        gost.depth = 2001;
+
+        const renderer = this.renderer as Phaser.Renderer.WebGL.WebGLRenderer;
+
+        let pipeline = renderer.pipelines.get(`gost-light`) as SimpleLightShader;
+
+        pipeline?.init(this, gost);
+
+        this.gosts.push(gost);
+
+        if (!this.player || !this.minotavr) return;
+
+        // Скример от призрака
+        this.physics.add.overlap(this.player, gost, this.gostGetPlayer);
     }
 }

@@ -18,3 +18,9 @@ export function getCuteTime(time: number) {
         String(minutes).length == 1 ? '0' + minutes : minutes
     }:${String(Math.floor(seconds)).length == 1 ? '0' : ''}${seconds.toFixed(2)}`;
 }
+
+export function randomInteger(min: number, max: number) {
+    // случайное число от min до (max+1)
+    let rand = min + Math.random() * (max + 1 - min);
+    return Math.floor(rand);
+}

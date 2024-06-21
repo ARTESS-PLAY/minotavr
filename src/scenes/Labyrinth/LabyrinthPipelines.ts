@@ -46,6 +46,13 @@ export class LabyrinthPipelines {
 
         currentPipline?.init(this.scene, minotavr);
         this.pipelines.push(currentPipline);
+
+        // Для работы с призраками
+        currentPipline = (this.scene.renderer as Phaser.Renderer.WebGL.WebGLRenderer).pipelines.add(
+            `gost-light`,
+            new SimpleLightShader(this.scene.game),
+        ) as unknown as SimpleLightShader;
+        this.pipelines.push(currentPipline);
     }
 
     // /**

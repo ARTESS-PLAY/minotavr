@@ -170,8 +170,8 @@ export class Minotavr extends Entity {
         if (!move.isMoving) {
             this.stop();
         } else {
+            this.updateSound();
         }
-        this.updateSound();
     }
 
     updateSound() {

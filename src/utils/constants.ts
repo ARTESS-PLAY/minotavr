@@ -11,6 +11,10 @@ export const SIZES = {
         WIDTH: 64,
         HEIGTH: 64,
     },
+    GOST: {
+        WIDTH: 64,
+        HEIGTH: 64,
+    },
     MINOTAVR: {
         WIDTH: 64,
         HEIGTH: 64,
@@ -26,9 +30,20 @@ export const LAYERS = {
 export const SPRITES = {
     PLAYER: 'player',
     MINOTAVR: 'minotavr',
+    GOST: 'gost',
 };
 
-export const MAP_SIZE = 3;
+export const GOST_SCREAMERS = {
+    MIN_SOUND: 1,
+    MAX_SOUND: 4,
+    MIN_IMAGE: 1,
+    MAX_IMAGE: 4,
+    IMAGE: 'gostScream',
+    AUDIO: 'screamAudio',
+    TIME_GENERATE: 10000,
+};
+
+export const MAP_SIZE = 15;
 
 export const TilesIndexes = {
     EMPTY: -1,
