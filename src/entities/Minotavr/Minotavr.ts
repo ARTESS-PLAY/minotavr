@@ -47,7 +47,7 @@ export class Minotavr extends Entity {
         this.textureKey = texture;
 
         //уменьшаем размеры блока
-        this.setSize(24, 30);
+        this.setSize(10, 10);
         this.scale = 1.4;
 
         anims.create({
