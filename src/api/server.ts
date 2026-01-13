@@ -2,7 +2,7 @@ import axios from 'axios';
 import { MAP_SIZE } from '../utils/constants';
 
 // const SERVERURL = 'https://minotavr-game.ru';
-const SERVERURL = 'http://5.129.252.52:3010';
+const SERVERURL = 'https://minotavr.shydamn.com';
 
 /**
  * Получает json карту с сервера
